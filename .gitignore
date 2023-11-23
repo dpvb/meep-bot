@@ -1,0 +1,4 @@
+deploy-image.sh
+target
+.idea
+.env
