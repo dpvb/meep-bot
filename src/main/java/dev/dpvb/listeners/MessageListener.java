@@ -13,7 +13,8 @@ public class MessageListener extends ListenerAdapter {
             "you're so lame",
             "frick you",
             "how can you not fill out a survey properly?",
-            "virgin"
+            "so cap",
+            "..."
     );
 
     private final static List<String> INSULTEES = List.of(
