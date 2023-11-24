@@ -8,7 +8,7 @@ public class HeyCommand extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (event.getName().equals("hey")) {
-            event.reply("Hey there funny").queue();
+            event.reply("Hey there!").queue();
         }
     }
 }
