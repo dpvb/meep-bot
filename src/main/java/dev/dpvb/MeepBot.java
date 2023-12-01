@@ -1,6 +1,7 @@
 package dev.dpvb;
 
 import dev.dpvb.commands.HeyCommand;
+import dev.dpvb.listeners.JoinListener;
 import dev.dpvb.listeners.MessageListener;
 import dev.dpvb.listeners.ReadyListener;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -8,6 +9,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class MeepBot {
 
@@ -16,7 +18,8 @@ public class MeepBot {
         final String TOKEN = dotenv.get("DISCORD_TOKEN");
         final JDA jda = JDABuilder
                 .createDefault(TOKEN)
-                .setActivity(Activity.customStatus("bully flare sim"))
+                .setActivity(Activity.customStatus("i love flare"))
+                .enableIntents(GatewayIntent.GUILD_MEMBERS)
                 .build();
 
         jda.updateCommands().addCommands(
@@ -25,6 +28,7 @@ public class MeepBot {
 
         jda.addEventListener(new ReadyListener());
         jda.addEventListener(new MessageListener());
+        jda.addEventListener(new JoinListener());
 
         jda.addEventListener(new HeyCommand());
 
