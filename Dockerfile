@@ -5,7 +5,7 @@ COPY .env ./.env
 RUN mvn dependency:go-offline -B
 RUN mvn clean package
 
-FROM arm32v7/adoptopenjdk:17-jre-hotspot
+FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 COPY --from=build /target/MeepBot.jar ./MeepBot.jar
 COPY --from=build ./.env ./.env
