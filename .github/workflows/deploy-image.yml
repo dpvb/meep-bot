@@ -39,7 +39,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64
+          platforms: linux/arm/v7
           push: true
           tags: dpvb/meep-bot:latest
           labels: ${{ steps.meta.outputs.labels }}
