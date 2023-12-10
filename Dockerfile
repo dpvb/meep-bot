@@ -5,7 +5,7 @@ COPY .env ./.env
 RUN mvn dependency:go-offline -B
 RUN mvn clean package
 
-FROM arm32v7/openjdk:17-jdk-slim
+FROM adoptopenjdk:17-jre-hotspot-buster-slim
 WORKDIR /app
 COPY --from=build /target/MeepBot.jar ./MeepBot.jar
 COPY --from=build ./.env ./.env
