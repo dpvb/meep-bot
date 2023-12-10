@@ -1,4 +1,4 @@
-FROM arm32v7/maven:3.8.4-openjdk-17 AS build
+FROM eclipse-temurin:17-jdk-jammy AS build
 COPY ./pom.xml ./pom.xml
 COPY ./src ./src
 COPY .env ./.env
