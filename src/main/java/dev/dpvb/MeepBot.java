@@ -10,7 +10,12 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import spark.Filter;
 import spark.Spark;
+
+import java.util.HashMap;
+
+import static spark.Spark.before;
 
 public class MeepBot {
 
@@ -45,8 +50,17 @@ public class MeepBot {
         jda.addEventListener(new HeyCommand());
     }
 
+    private static void enableCORS(final String origin, final String methods, final String headers) {
+        before((request, response) -> {
+            response.header("Access-Control-Allow-Origin", origin);
+            response.header("Access-Control-Request-Method", methods);
+            response.header("Access-Control-Allow-Headers", headers);
+        });
+    }
+
     private static void setupServer() {
         Spark.port(4567);
+        enableCORS("*", "*", "*");
         Spark.get("/status", (req, res) -> "Online");
     }
 

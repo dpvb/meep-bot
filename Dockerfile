@@ -9,4 +9,5 @@ FROM arm32v7/adoptopenjdk:11-jre-hotspot-bionic
 WORKDIR /app
 COPY --from=build /target/MeepBot.jar ./MeepBot.jar
 COPY --from=build ./.env ./.env
+EXPOSE 4567
 CMD ["java", "-jar", "./MeepBot.jar"]
