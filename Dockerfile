@@ -1,13 +1,12 @@
-FROM arm32v7/maven:3.9.5-eclipse-temurin-11 AS build
+FROM maven:3.8.5-openjdk-11-slim AS build
 COPY ./pom.xml ./pom.xml
 COPY ./src ./src
 COPY .env ./.env
 RUN mvn dependency:go-offline -B
 RUN mvn clean package
 
-FROM arm32v7/adoptopenjdk:11-jre-hotspot-bionic
+FROM adoptopenjdk/openjdk11:jdk-11.0.12_7-alpine
 WORKDIR /app
 COPY --from=build /target/MeepBot.jar ./MeepBot.jar
 COPY --from=build ./.env ./.env
-EXPOSE 4567
-CMD ["java", "-jar", "./MeepBot.jar"]
+CMD ["java", "-jar", "./MeepBot.jar"d]
