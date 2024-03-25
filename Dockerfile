@@ -9,4 +9,4 @@ FROM adoptopenjdk/openjdk11:jdk-11.0.12_7-alpine
 WORKDIR /app
 COPY --from=build /target/MeepBot.jar ./MeepBot.jar
 COPY --from=build ./.env ./.env
-CMD ["java", "-jar", "./MeepBot.jar"d]
+CMD ["java", "-jar", "./MeepBot.jar"]

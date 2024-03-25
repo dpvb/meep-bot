@@ -3,6 +3,7 @@ package dev.dpvb;
 import dev.dpvb.commands.HeyCommand;
 import dev.dpvb.commands.TIMRNCommand;
 import dev.dpvb.listeners.JoinListener;
+import dev.dpvb.listeners.PlinkListener;
 import dev.dpvb.listeners.ReadyListener;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
@@ -21,7 +22,7 @@ public class MeepBot {
         jda = JDABuilder
                 .createDefault(TOKEN)
                 .setActivity(Activity.customStatus("mega pace"))
-                .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT)
                 .build();
 
         registerEvents();
@@ -33,6 +34,7 @@ public class MeepBot {
     private static void registerEvents() {
         jda.addEventListener(new ReadyListener());
         jda.addEventListener(new JoinListener());
+        jda.addEventListener(new PlinkListener());
     }
 
     private static void registerCommands() {
