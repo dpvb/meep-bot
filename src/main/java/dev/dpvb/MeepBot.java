@@ -5,6 +5,7 @@ import dev.dpvb.commands.TIMRNCommand;
 import dev.dpvb.listeners.JoinListener;
 import dev.dpvb.listeners.PlinkListener;
 import dev.dpvb.listeners.ReadyListener;
+import dev.dpvb.twitch.TwitchListener;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -27,6 +28,8 @@ public class MeepBot {
 
         registerEvents();
         registerCommands();
+
+        new TwitchListener(jda).start();
 
         jda.awaitReady();
     }
