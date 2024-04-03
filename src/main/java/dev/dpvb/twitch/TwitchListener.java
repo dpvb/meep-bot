@@ -149,7 +149,7 @@ public class TwitchListener {
         public void sendLiveMessage() {
             TextChannel channel = jda.getTextChannelById(channelID);
             if (channel != null) {
-                channel.sendMessage("@everyone Bungoh is now live @ https://twitch.tv/bungoh").queue();
+                channel.sendMessage("@everyone Bungoh is now live @ https://twitch.tv/bungoh :meeprgb: :meeprgb: :meeprgb:").queue();
             } else {
                 System.out.println("Stream alerts channel not found.");
             }
