@@ -21,7 +21,7 @@ public class MeepBot {
         final String TOKEN = dotenv.get("DISCORD_TOKEN");
         jda = JDABuilder
                 .createDefault(TOKEN)
-                .setActivity(Activity.customStatus("mega pace"))
+                .setActivity(Activity.customStatus("plink"))
                 .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT)
                 .build();
 
