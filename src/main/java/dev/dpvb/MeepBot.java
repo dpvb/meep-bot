@@ -5,6 +5,7 @@ import dev.dpvb.commands.TIMRNCommand;
 import dev.dpvb.listeners.JoinListener;
 import dev.dpvb.listeners.PlinkListener;
 import dev.dpvb.listeners.ReadyListener;
+import dev.dpvb.websockets.TwitchWebsocket;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -21,12 +22,14 @@ public class MeepBot {
         final String TOKEN = dotenv.get("DISCORD_TOKEN");
         jda = JDABuilder
                 .createDefault(TOKEN)
-                .setActivity(Activity.customStatus("mega pace"))
+                .setActivity(Activity.customStatus("plink"))
                 .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT)
                 .build();
 
         registerEvents();
         registerCommands();
+        TwitchWebsocket twitchWebsocket = new TwitchWebsocket(dotenv);
+        twitchWebsocket.connect();
 
         jda.awaitReady();
     }
