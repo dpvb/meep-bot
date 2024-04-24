@@ -50,6 +50,8 @@ public class MeepBot {
         jda.addEventListener(new HeyCommand());
         jda.addEventListener(new TIMRNCommand());
         jda.addEventListener(new AmazonCommand());
+        jda.retrieveCommands().complete()
+                .forEach(command -> System.out.println("Registered command: " + command.getName()));
     }
 
 
