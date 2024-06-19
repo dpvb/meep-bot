@@ -31,7 +31,8 @@ public class MeepBot {
         registerEvents();
         registerCommands();
 
-        new TwitchListener(jda).start();
+        // Disabled Twitch Listener
+        // new TwitchListener(jda).start();
 
         jda.awaitReady();
     }
