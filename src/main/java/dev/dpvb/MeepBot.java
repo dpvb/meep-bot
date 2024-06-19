@@ -3,6 +3,7 @@ package dev.dpvb;
 import dev.dpvb.commands.AmazonCommand;
 import dev.dpvb.commands.HeyCommand;
 import dev.dpvb.commands.TIMRNCommand;
+import dev.dpvb.listeners.BuhListener;
 import dev.dpvb.listeners.JoinListener;
 import dev.dpvb.listeners.PlinkListener;
 import dev.dpvb.listeners.ReadyListener;
@@ -39,6 +40,7 @@ public class MeepBot {
         jda.addEventListener(new ReadyListener());
         jda.addEventListener(new JoinListener());
         jda.addEventListener(new PlinkListener());
+        jda.addEventListener(new BuhListener());
     }
 
     private static void registerCommands() {
