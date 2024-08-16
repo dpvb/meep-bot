@@ -13,12 +13,13 @@ public class InsultListener extends ListenerAdapter {
             "You're such a rat",
             "Rat",
             "Mow?",
-            "I'm so disappointed in you"
+            "I'm so disappointed in you",
+            "You're such a bad boy"
     );
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        final int random = ThreadLocalRandom.current().nextInt(8);
+        final int random = ThreadLocalRandom.current().nextInt(12);
         if (random == 0) {
             final String insult = insultsList.get(ThreadLocalRandom.current().nextInt(insultsList.size()));
             event.getChannel().sendMessage(insult).queue();
