@@ -40,6 +40,7 @@ public class MeepBot {
         jda.addEventListener(new PlinkListener());
         jda.addEventListener(new BuhListener());
         jda.addEventListener(new MowListener());
+        jda.addEventListener(new InsultListener());
     }
 
     private static void registerCommands() {
