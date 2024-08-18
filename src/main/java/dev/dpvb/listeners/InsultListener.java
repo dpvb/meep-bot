@@ -15,7 +15,8 @@ public class InsultListener extends ListenerAdapter {
             "Mow?",
             "I'm so disappointed in you",
             "Have you been a bad boy???",
-            "I bet you go to bed with socks on"
+            "I bet you go to bed with socks on",
+            "Very mowful, very demure"
     );
 
     @Override
