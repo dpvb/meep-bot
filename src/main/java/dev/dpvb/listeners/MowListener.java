@@ -9,7 +9,7 @@ public class MowListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (event.getMessage().getContentRaw().equals("mow")) {
+        if (event.getMessage().getContentRaw().equalsIgnoreCase("mow")) {
             event.getChannel().sendMessage(MOW_GIF).queue();
         }
     }
