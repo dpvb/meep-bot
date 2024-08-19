@@ -6,7 +6,9 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import dev.dpvb.mongo.services.MessageService;
+import dev.dpvb.mongo.services.MessageStatsService;
 import io.github.cdimascio.dotenv.Dotenv;
+import net.dv8tion.jda.api.entities.Message;
 import org.bson.codecs.configuration.CodecRegistry;
 
 import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
@@ -18,6 +20,7 @@ public class MongoManager {
 
     private static MongoManager instance;
     private final MessageService messageService;
+    private final MessageStatsService messageStatsService;
 
     private MongoManager() {
         final Dotenv dotenv = Dotenv.load();
@@ -39,6 +42,7 @@ public class MongoManager {
         System.out.println("Connected to MongoDB");
 
         messageService = new MessageService(db);
+        messageStatsService = new MessageStatsService(db);
     }
 
     public static MongoManager getInstance() {
@@ -53,4 +57,7 @@ public class MongoManager {
         return messageService;
     }
 
+    public MessageStatsService getMessageStatsService() {
+        return messageStatsService;
+    }
 }
