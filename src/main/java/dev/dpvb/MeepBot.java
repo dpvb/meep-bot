@@ -4,6 +4,7 @@ import dev.dpvb.commands.AmazonCommand;
 import dev.dpvb.commands.HeyCommand;
 import dev.dpvb.commands.TIMRNCommand;
 import dev.dpvb.listeners.*;
+import dev.dpvb.mongo.MongoManager;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -40,6 +41,7 @@ public class MeepBot {
         jda.addEventListener(new BuhListener());
         jda.addEventListener(new MowListener());
         jda.addEventListener(new InsultListener());
+        jda.addEventListener(new MessageListener());
     }
 
     private static void registerCommands() {
