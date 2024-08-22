@@ -1,5 +1,7 @@
 package dev.dpvb.mongo.models;
 
+import dev.dpvb.mongo.enums.MessageType;
+
 public class MessageStats {
 
     public String username;
@@ -10,6 +12,10 @@ public class MessageStats {
 
     public MessageStats() {
 
+    }
+
+    public MessageStats(String username) {
+        this(username, 0, 0, 0, 0);
     }
 
     public MessageStats(String username, int totalMessages, int plinks, int mows, int buhs) {
@@ -58,5 +64,28 @@ public class MessageStats {
 
     public void setBuhs(int buhs) {
         this.buhs = buhs;
+    }
+
+    public void addMessage(MessageType type) {
+        // always increment totalMessages
+        this.totalMessages++;
+        switch (type) {
+            case PLINK: {
+                this.plinks++;
+                break;
+            }
+            case BUH: {
+                this.buhs++;
+                break;
+            }
+            case MOW: {
+                this.mows++;
+                break;
+            }
+            case OTHER: {
+                // Do nothing else
+                break;
+            }
+        }
     }
 }

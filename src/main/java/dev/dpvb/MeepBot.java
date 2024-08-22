@@ -11,7 +11,6 @@ import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -122,6 +121,7 @@ public class MeepBot {
         jda.addEventListener(new JoinListener());
         jda.addEventListener(new PlinkListener());
         jda.addEventListener(new BuhListener());
+        jda.addEventListener(new HumpDayListener());
         jda.addEventListener(new MowListener());
         jda.addEventListener(new InsultListener());
         jda.addEventListener(new MessageListener());
@@ -139,6 +139,5 @@ public class MeepBot {
         jda.retrieveCommands().complete()
                 .forEach(command -> System.out.println("Registered command: " + command.getName()));
     }
-
 
 }
