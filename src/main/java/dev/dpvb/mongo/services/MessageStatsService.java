@@ -11,6 +11,15 @@ public class MessageStatsService extends MongoService<MessageStats> {
         super(database, "message-stats", MessageStats.class);
     }
 
+    public void setStats(MessageStats newStats) {
+        MessageStats messageStats = collection.find(eq("username", newStats.username)).first();
+        if (messageStats == null) {
+            collection.insertOne(newStats);
+        } else {
+            collection.replaceOne(eq("username", newStats.username), newStats);
+        }
+    }
+
     public void addPlink(String username) {
         MessageStats messageStats = collection.find(eq("username", username)).first();
         if (messageStats == null) {
