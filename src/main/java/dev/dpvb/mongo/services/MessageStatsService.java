@@ -1,6 +1,8 @@
 package dev.dpvb.mongo.services;
 
 import com.mongodb.client.MongoDatabase;
+
+import dev.dpvb.mongo.enums.MessageType;
 import dev.dpvb.mongo.models.MessageStats;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -21,48 +23,29 @@ public class MessageStatsService extends MongoService<MessageStats> {
     }
 
     public void addPlink(String username) {
-        MessageStats messageStats = collection.find(eq("username", username)).first();
-        if (messageStats == null) {
-            messageStats = new MessageStats(username, 1, 1, 0, 0);
-            collection.insertOne(messageStats);
-        } else {
-            messageStats.totalMessages++;
-            messageStats.plinks++;
-            collection.replaceOne(eq("username", username), messageStats);
-        }
+        addOrUpdateType(username, MessageType.PLINK);
     }
 
     public void addBuh(String username) {
-        MessageStats messageStats = collection.find(eq("username", username)).first();
-        if (messageStats == null) {
-            messageStats = new MessageStats(username, 1, 0, 0, 1);
-            collection.insertOne(messageStats);
-        } else {
-            messageStats.totalMessages++;
-            messageStats.buhs++;
-            collection.replaceOne(eq("username", username), messageStats);
-        }
+        addOrUpdateType(username, MessageType.BUH);
     }
 
     public void addMow(String username) {
-        MessageStats messageStats = collection.find(eq("username", username)).first();
-        if (messageStats == null) {
-            messageStats = new MessageStats(username, 1, 0, 1, 0);
-            collection.insertOne(messageStats);
-        } else {
-            messageStats.totalMessages++;
-            messageStats.mows++;
-            collection.replaceOne(eq("username", username), messageStats);
-        }
+        addOrUpdateType(username, MessageType.MOW);
     }
 
     public void addMessage(String username) {
+        addOrUpdateType(username, MessageType.OTHER);
+    }
+
+    private void addOrUpdateType(String username, MessageType type) {
         MessageStats messageStats = collection.find(eq("username", username)).first();
         if (messageStats == null) {
-            messageStats = new MessageStats(username, 1, 0, 0, 0);
+            messageStats = new MessageStats(username);
+            messageStats.addMessage(type);
             collection.insertOne(messageStats);
         } else {
-            messageStats.totalMessages++;
+            messageStats.addMessage(type);
             collection.replaceOne(eq("username", username), messageStats);
         }
     }
