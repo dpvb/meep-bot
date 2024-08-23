@@ -1,8 +1,6 @@
 package dev.dpvb;
 
-import dev.dpvb.commands.AmazonCommand;
 import dev.dpvb.commands.HeyCommand;
-import dev.dpvb.commands.TIMRNCommand;
 import dev.dpvb.listeners.*;
 import dev.dpvb.mongo.MongoManager;
 import dev.dpvb.mongo.models.MessageStats;
@@ -129,13 +127,9 @@ public class MeepBot {
 
     private static void registerCommands() {
         jda.updateCommands().addCommands(
-                Commands.slash("hey", "Say hey!"),
-                Commands.slash("thisismern", "This is me right now..."),
-                Commands.slash("amazon", "Get a nice message!")
+                Commands.slash("hey", "Say hey!")
         ).queue();
         jda.addEventListener(new HeyCommand());
-        jda.addEventListener(new TIMRNCommand());
-        jda.addEventListener(new AmazonCommand());
         jda.retrieveCommands().complete()
                 .forEach(command -> System.out.println("Registered command: " + command.getName()));
     }
