@@ -21,8 +21,7 @@ public class InsultListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        final int random = ThreadLocalRandom.current().nextInt(12);
-        if (random == 0) {
+        if (Math.random() < 0.05) {
             final String insult = insultsList.get(ThreadLocalRandom.current().nextInt(insultsList.size()));
             event.getChannel().sendMessage(insult).queue();
         }
