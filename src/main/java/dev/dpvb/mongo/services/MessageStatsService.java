@@ -7,6 +7,10 @@ import dev.dpvb.mongo.models.MessageStats;
 
 import static com.mongodb.client.model.Filters.eq;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 public class MessageStatsService extends MongoService<MessageStats> {
 
     public MessageStatsService(MongoDatabase database) {
@@ -48,6 +52,14 @@ public class MessageStatsService extends MongoService<MessageStats> {
             messageStats.addMessage(type);
             collection.replaceOne(eq("username", username), messageStats);
         }
+    }
+
+    public MessageStats getUserMessageStats(String username) {
+        return collection.find(eq("username", username)).first();
+    }
+
+    public List<MessageStats> getAllMessageStats() {
+        return StreamSupport.stream(collection.find().spliterator(), false).collect(Collectors.toList());
     }
 
 }
