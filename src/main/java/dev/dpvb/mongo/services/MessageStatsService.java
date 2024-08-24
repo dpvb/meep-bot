@@ -8,6 +8,7 @@ import dev.dpvb.mongo.models.MessageStats;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class MessageStatsService extends MongoService<MessageStats> {
@@ -58,7 +59,7 @@ public class MessageStatsService extends MongoService<MessageStats> {
     }
 
     public List<MessageStats> getAllMessageStats() {
-        return StreamSupport.stream(collection.find().spliterator(), false).toList();
+        return StreamSupport.stream(collection.find().spliterator(), false).collect(Collectors.toList());
     }
 
 }
