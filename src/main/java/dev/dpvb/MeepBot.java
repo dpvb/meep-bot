@@ -1,6 +1,7 @@
 package dev.dpvb;
 
 import dev.dpvb.commands.HeyCommand;
+import dev.dpvb.commands.StatCheckCommand;
 import dev.dpvb.listeners.*;
 import dev.dpvb.mongo.MongoManager;
 import dev.dpvb.mongo.models.MessageStats;
@@ -127,9 +128,12 @@ public class MeepBot {
 
     private static void registerCommands() {
         jda.updateCommands().addCommands(
-                Commands.slash("hey", "Say hey!")
+                Commands.slash("hey", "Say hey!"),
+                Commands.slash("statcheck", "Get your message stats"),
+                Commands.slash("allstats", "Get server message stats")
         ).queue();
         jda.addEventListener(new HeyCommand());
+        jda.addEventListener(new StatCheckCommand());
         jda.retrieveCommands().complete()
                 .forEach(command -> System.out.println("Registered command: " + command.getName()));
     }
