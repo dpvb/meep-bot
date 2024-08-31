@@ -38,3 +38,10 @@ jobs:
           push: true
           tags: dpvb/meep-bot:latest
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Redeploy Brownie
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: 'https://bungoh.dev/redeploy-brownie'
+          method: 'GET'
+          customHeaders: '{"X-API-KEY": "${{ secrets.BUNGOH_API_KEY }}"}'
