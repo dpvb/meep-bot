@@ -5,10 +5,8 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
-import dev.dpvb.mongo.services.MessageService;
 import dev.dpvb.mongo.services.MessageStatsService;
 import io.github.cdimascio.dotenv.Dotenv;
-import net.dv8tion.jda.api.entities.Message;
 import org.bson.codecs.configuration.CodecRegistry;
 
 import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
@@ -19,7 +17,6 @@ import static org.bson.codecs.pojo.PojoCodecProvider.builder;
 public class MongoManager {
 
     private static MongoManager instance;
-    private final MessageService messageService;
     private final MessageStatsService messageStatsService;
 
     private MongoManager() {
@@ -41,7 +38,6 @@ public class MongoManager {
 
         System.out.println("Connected to MongoDB");
 
-        messageService = new MessageService(db);
         messageStatsService = new MessageStatsService(db);
     }
 
@@ -51,10 +47,6 @@ public class MongoManager {
         }
 
         return instance;
-    }
-
-    public MessageService getMessageService() {
-        return messageService;
     }
 
     public MessageStatsService getMessageStatsService() {
