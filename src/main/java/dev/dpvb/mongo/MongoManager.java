@@ -5,6 +5,7 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import dev.dpvb.mongo.services.InsultSuggestionService;
 import dev.dpvb.mongo.services.MessageStatsService;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -18,6 +19,7 @@ public class MongoManager {
 
     private static MongoManager instance;
     private final MessageStatsService messageStatsService;
+    private final InsultSuggestionService insultSuggestionService;
 
     private MongoManager() {
         final Dotenv dotenv = Dotenv.load();
@@ -39,6 +41,7 @@ public class MongoManager {
         System.out.println("Connected to MongoDB");
 
         messageStatsService = new MessageStatsService(db);
+        insultSuggestionService = new InsultSuggestionService(db);
     }
 
     public static MongoManager getInstance() {
@@ -51,5 +54,9 @@ public class MongoManager {
 
     public MessageStatsService getMessageStatsService() {
         return messageStatsService;
+    }
+
+    public InsultSuggestionService getInsultSuggestionService() {
+        return insultSuggestionService;
     }
 }
