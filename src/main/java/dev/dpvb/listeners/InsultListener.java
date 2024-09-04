@@ -1,5 +1,8 @@
 package dev.dpvb.listeners;
 
+import dev.dpvb.mongo.MongoManager;
+import dev.dpvb.mongo.models.InsultSuggestion;
+import dev.dpvb.mongo.services.InsultSuggestionService;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -55,6 +58,12 @@ public class InsultListener extends ListenerAdapter {
             "its past your bedtime sleepyhead..."
     );
 
+    private final InsultSuggestionService iss;
+
+    public InsultListener() {
+        iss = MongoManager.getInstance().getInsultSuggestionService();
+    }
+
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.getAuthor().isBot()) {
@@ -62,7 +71,8 @@ public class InsultListener extends ListenerAdapter {
         }
 
         if (Math.random() < 0.05) {
-            final String insult = insultsList.get(ThreadLocalRandom.current().nextInt(insultsList.size()));
+            final List<InsultSuggestion> insultsList = iss.getApprovedInsults();
+            final String insult = insultsList.get(ThreadLocalRandom.current().nextInt(insultsList.size())).getInsult();
             event.getChannel().sendMessage(insult).queue();
         }
     }
