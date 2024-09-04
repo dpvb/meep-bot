@@ -1,6 +1,7 @@
 package dev.dpvb;
 
 import dev.dpvb.commands.HeyCommand;
+import dev.dpvb.commands.InsultsCommand;
 import dev.dpvb.commands.StatCheckCommand;
 import dev.dpvb.commands.SuggestInsultCommand;
 import dev.dpvb.listeners.*;
@@ -12,6 +13,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -134,11 +136,14 @@ public class MeepBot {
                 Commands.slash("statcheck", "Get your message stats"),
                 Commands.slash("allstats", "Get server message stats"),
                 Commands.slash("suggestinsult", "Suggest an insult for Brownie to use")
-                        .addOption(OptionType.STRING, "insult", "The insult to suggest", true)
+                        .addOption(OptionType.STRING, "insult", "The insult to suggest", true),
+                Commands.slash("insults", "Lists all insults of Brownie's insults")
+                        .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
         ).queue();
         jda.addEventListener(new HeyCommand());
         jda.addEventListener(new StatCheckCommand());
         jda.addEventListener(new SuggestInsultCommand());
+        jda.addEventListener(new InsultsCommand());
         jda.retrieveCommands().complete()
                 .forEach(command -> System.out.println("Registered command: " + command.getName()));
     }
