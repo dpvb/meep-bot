@@ -86,6 +86,7 @@ public class SuggestInsultCommand extends ListenerAdapter {
             eb.setImage(DENIED_IMAGE);
             event.reply("Suggestion denied!").setEphemeral(true).queue();
         }
+        eb.addField("Reviewer", "<@" + event.getUser().getId() + ">", false);
         iss.updateInsultSuggestion(insultID, insultSuggestion);
         final String description = oldEmbed.getDescription();
         eb.setDescription(description);
