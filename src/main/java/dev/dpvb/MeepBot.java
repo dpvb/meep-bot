@@ -5,25 +5,15 @@ import dev.dpvb.commands.InsultsCommand;
 import dev.dpvb.commands.StatCheckCommand;
 import dev.dpvb.commands.SuggestInsultCommand;
 import dev.dpvb.listeners.*;
-import dev.dpvb.mongo.MongoManager;
-import dev.dpvb.mongo.models.MessageStats;
-import dev.dpvb.mongo.services.MessageStatsService;
 import dev.dpvb.util.ProcessorUtil;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class MeepBot {
 
@@ -53,12 +43,9 @@ public class MeepBot {
     private static void registerEvents() {
         jda.addEventListener(new ReadyListener());
         jda.addEventListener(new JoinListener());
-        jda.addEventListener(new PlinkListener());
-        jda.addEventListener(new BuhListener());
-        jda.addEventListener(new HumpDayListener());
-        jda.addEventListener(new MowListener());
+        jda.addEventListener(new GifListener());
         jda.addEventListener(new InsultListener());
-        jda.addEventListener(new MessageListener());
+        jda.addEventListener(new MessageStatListener());
     }
 
     private static void registerCommands() {

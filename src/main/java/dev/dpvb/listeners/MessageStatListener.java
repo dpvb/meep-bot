@@ -5,11 +5,11 @@ import dev.dpvb.mongo.services.MessageStatsService;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public class MessageListener extends ListenerAdapter {
+public class MessageStatListener extends ListenerAdapter {
 
     private final MessageStatsService mss;
 
-    public MessageListener() {
+    public MessageStatListener() {
          mss = MongoManager.getInstance().getMessageStatsService();
     }
 
