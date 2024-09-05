@@ -20,10 +20,10 @@ public class SuggestInsultCommand extends ListenerAdapter {
 
     private final InsultSuggestionService iss;
 
-    private final String INSULT_SUGGESTION_INGESTION_CHANNEL_ID = "1280670129939681357";
-    private final String PENDING_IMAGE = "https://media.discordapp.net/stickers/1279818877848522825.webp?size=160&quality=lossless";
-    private final String APPROVED_IMAGE = "https://media1.tenor.com/m/y1QFa-1vyKYAAAAC/plink-wide-cat.gif";
-    private final String DENIED_IMAGE = "https://media1.tenor.com/m/Hx5yUAxxYvwAAAAC/buh-b-u-h.gif";
+    private final static String INSULT_SUGGESTION_INGESTION_CHANNEL_ID = "1280670129939681357";
+    private final static String PENDING_IMAGE = "https://media.discordapp.net/stickers/1279818877848522825.webp?size=160&quality=lossless";
+    private final static String APPROVED_IMAGE = "https://media1.tenor.com/m/y1QFa-1vyKYAAAAC/plink-wide-cat.gif";
+    private final static String DENIED_IMAGE = "https://media1.tenor.com/m/Hx5yUAxxYvwAAAAC/buh-b-u-h.gif";
 
     public SuggestInsultCommand() {
         iss = MongoManager.getInstance().getInsultSuggestionService();
