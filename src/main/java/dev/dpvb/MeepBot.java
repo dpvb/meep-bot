@@ -4,6 +4,7 @@ import dev.dpvb.commands.HeyCommand;
 import dev.dpvb.commands.InsultsCommand;
 import dev.dpvb.commands.StatCheckCommand;
 import dev.dpvb.commands.SuggestInsultCommand;
+import dev.dpvb.leaderboards.PlinkLeaderboard;
 import dev.dpvb.listeners.*;
 import dev.dpvb.util.ProcessorUtil;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -33,11 +34,19 @@ public class MeepBot {
 
         jda.awaitReady();
 
+        registerLeaderboards();
+
         if (args.length == 1) {
             if (args[0].equals("process-messages")) {
                 ProcessorUtil.processMessages(jda);
+            } else if (args[0].equals("process-users")) {
+                ProcessorUtil.processUsers(jda);
             }
         }
+    }
+
+    private static void registerLeaderboards() {
+        new PlinkLeaderboard(jda);
     }
 
     private static void registerEvents() {

@@ -26,26 +26,26 @@ public class MessageStatsService extends MongoService<MessageStats> {
         }
     }
 
-    public void addPlink(String username) {
-        addOrUpdateType(username, MessageType.PLINK);
+    public void addPlink(String discordId, String username) {
+        addOrUpdateType(discordId, username, MessageType.PLINK);
     }
 
-    public void addBuh(String username) {
-        addOrUpdateType(username, MessageType.BUH);
+    public void addBuh(String discordId, String username) {
+        addOrUpdateType(discordId, username, MessageType.BUH);
     }
 
-    public void addMow(String username) {
-        addOrUpdateType(username, MessageType.MOW);
+    public void addMow(String discordId, String username) {
+        addOrUpdateType(discordId, username, MessageType.MOW);
     }
 
-    public void addMessage(String username) {
-        addOrUpdateType(username, MessageType.OTHER);
+    public void addMessage(String discordId, String username) {
+        addOrUpdateType(discordId, username, MessageType.OTHER);
     }
 
-    private void addOrUpdateType(String username, MessageType type) {
+    private void addOrUpdateType(String discordID, String username, MessageType type) {
         MessageStats messageStats = collection.find(eq("username", username)).first();
         if (messageStats == null) {
-            messageStats = new MessageStats(username);
+            messageStats = new MessageStats(discordID, username);
             messageStats.addMessage(type);
             collection.insertOne(messageStats);
         } else {

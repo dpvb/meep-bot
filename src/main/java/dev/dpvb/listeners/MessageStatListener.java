@@ -16,16 +16,17 @@ public class MessageStatListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         final String username = event.getAuthor().getName();
+        final String discordID = event.getAuthor().getId();
         final String message = event.getMessage().getContentRaw();
 
         if (message.equals("plink")) {
-            mss.addPlink(username);
+            mss.addPlink(discordID, username);
         } else if (message.equals("buh")) {
-            mss.addBuh(username);
+            mss.addBuh(discordID, username);
         } else if (message.equalsIgnoreCase("mow")) {
-            mss.addMow(username);
+            mss.addMow(discordID, username);
         } else {
-            mss.addMessage(username);
+            mss.addMessage(discordID, username);
         }
     }
 }
