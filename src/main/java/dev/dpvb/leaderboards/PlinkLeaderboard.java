@@ -20,7 +20,7 @@ public class PlinkLeaderboard {
     private static final String LEADERBOARD_CHANNEL_ID = "1282365851001163786";
     private static final String LEADERBOARD_TITLE = "\uD83C\uDFC6 PLINK LEADERBOARD \uD83C\uDFC6";
     private static final String LEADERBOARD_MESSAGE_ID = "1282374559122722826";
-    private static final long UPDATE_INTERVAL = 1L; // Time in Minutes
+    private static final long UPDATE_INTERVAL = 60L; // Time in Minutes
 
     private MessageStatsService mss;
     private TextChannel leaderboardChannel;
