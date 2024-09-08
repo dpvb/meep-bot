@@ -44,7 +44,8 @@ public class ProcessorUtil {
 
         for (User user : users) {
             final String username = user.getName();
-            final MessageStats messageStats = new MessageStats(username, 0, 0, 0, 0);
+            final String discordID = user.getId();
+            final MessageStats messageStats = new MessageStats(discordID, username, 0, 0, 0, 0);
             messageStatMap.put(username, messageStats);
         }
 
@@ -82,6 +83,23 @@ public class ProcessorUtil {
         System.out.println("Applied stats to MongoDB.");
 
         System.out.println("Done processing messages.");
+    }
+
+    public static void processUsers(JDA jda) {
+        System.out.println("processing users...");
+        final long guildID = 1129622683546554479L;
+        final Guild guild = jda.getGuildById(guildID);
+
+        if (guild == null) {
+            System.out.println("Couldn't find MEEP guild.");
+            System.exit(1);
+        }
+
+        guild.loadMembers().get().stream().map(Member::getUser).forEach(user -> {
+            System.out.println("User: " + user.getName() + " ID: " + user.getId());
+        });
+
+        System.exit(1);
     }
 
 }

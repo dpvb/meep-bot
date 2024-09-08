@@ -4,6 +4,7 @@ import dev.dpvb.mongo.enums.MessageType;
 
 public class MessageStats {
 
+    public String discordID;
     public String username;
     public int totalMessages;
     public int plinks;
@@ -14,16 +15,25 @@ public class MessageStats {
 
     }
 
-    public MessageStats(String username) {
-        this(username, 0, 0, 0, 0);
+    public MessageStats(String discordID, String username) {
+        this(discordID, username, 0, 0, 0, 0);
     }
 
-    public MessageStats(String username, int totalMessages, int plinks, int mows, int buhs) {
+    public MessageStats(String discordID, String username, int totalMessages, int plinks, int mows, int buhs) {
+        this.discordID = discordID;
         this.username = username;
         this.totalMessages = totalMessages;
         this.plinks = plinks;
         this.mows = mows;
         this.buhs = buhs;
+    }
+
+    public String getDiscordID() {
+        return discordID;
+    }
+
+    public void setDiscordID(String discordID) {
+        this.discordID = discordID;
     }
 
     public String getUsername() {
