@@ -25,7 +25,7 @@ public class MeepBot {
         final String TOKEN = dotenv.get("DISCORD_TOKEN");
         jda = JDABuilder
                 .createDefault(TOKEN)
-                .setActivity(Activity.customStatus("plink"))
+                .setActivity(Activity.customStatus("buh"))
                 .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_WEBHOOKS)
                 .build();
 
