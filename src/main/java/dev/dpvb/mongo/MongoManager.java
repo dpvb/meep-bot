@@ -5,6 +5,7 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import dev.dpvb.MeepBot;
 import dev.dpvb.mongo.services.InsultSuggestionService;
 import dev.dpvb.mongo.services.MessageStatsService;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -22,8 +23,7 @@ public class MongoManager {
     private final InsultSuggestionService insultSuggestionService;
 
     private MongoManager() {
-        final Dotenv dotenv = Dotenv.load();
-        final ConnectionString connectionString = new ConnectionString(dotenv.get("MONGO_URI"));
+        final ConnectionString connectionString = new ConnectionString(MeepBot.Environment.getMongoURI());
         final CodecRegistry pojoCodecRegistry = fromRegistries(
                 getDefaultCodecRegistry(),
                 fromProviders(
