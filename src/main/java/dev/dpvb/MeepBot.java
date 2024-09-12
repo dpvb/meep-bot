@@ -21,11 +21,12 @@ public class MeepBot {
     private static JDA jda;
 
     public static void main(String[] args) throws InterruptedException {
-        final Dotenv dotenv = Dotenv.load();
-        final String TOKEN = dotenv.get("DISCORD_TOKEN");
+        final String TOKEN = Environment.getDiscordToken();
+        final String STATUS = Environment.getEnvironment().equals("prod") ? "buh" : "dev";
+
         jda = JDABuilder
                 .createDefault(TOKEN)
-                .setActivity(Activity.customStatus("buh"))
+                .setActivity(Activity.customStatus(STATUS))
                 .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_WEBHOOKS)
                 .build();
 
@@ -74,6 +75,22 @@ public class MeepBot {
         jda.addEventListener(new InsultsCommand());
         jda.retrieveCommands().complete()
                 .forEach(command -> System.out.println("Registered command: " + command.getName()));
+    }
+
+    public static class Environment {
+        private static final Dotenv dotenv = Dotenv.load();
+
+        public static String getDiscordToken() {
+            return dotenv.get("DISCORD_TOKEN");
+        }
+
+        public static String getMongoURI() {
+            return dotenv.get("MONGO_URI");
+        }
+
+        public static String getEnvironment() {
+            return dotenv.get("ENVIRONMENT");
+        }
     }
 
 }
