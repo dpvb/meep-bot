@@ -1,16 +1,13 @@
 package dev.dpvb;
 
 import dev.dpvb.commands.*;
-import dev.dpvb.leaderboards.PlinkLeaderboard;
+import dev.dpvb.leaderboards.LeaderboardManager;
 import dev.dpvb.listeners.*;
 import dev.dpvb.util.ProcessorUtil;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import java.util.HashSet;
@@ -36,7 +33,8 @@ public class MeepBot {
 
         jda.awaitReady();
 
-        registerLeaderboards();
+        // initialize leaderboard manager
+        LeaderboardManager.init(jda);
 
         if (args.length == 1) {
             if (args[0].equals("process-messages")) {
@@ -45,10 +43,6 @@ public class MeepBot {
                 ProcessorUtil.processUsers(jda);
             }
         }
-    }
-
-    private static void registerLeaderboards() {
-        new PlinkLeaderboard(jda);
     }
 
     private static void registerEvents() {
@@ -66,6 +60,7 @@ public class MeepBot {
         commands.add(new HeyCommand());
         commands.add(new SuggestInsultCommand());
         commands.add(new InsultsCommand());
+//        commands.add(new EmbedCommand());
 
         // Register the slash commands with Discord
         jda.updateCommands()
