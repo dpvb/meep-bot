@@ -9,12 +9,15 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.awt.*;
 import java.util.Date;
 
-public class SuggestInsultCommand extends ListenerAdapter {
+public class SuggestInsultCommand extends Command {
 
     private final InsultSuggestionService iss;
 
@@ -24,11 +27,18 @@ public class SuggestInsultCommand extends ListenerAdapter {
     private final static String DENIED_IMAGE = "https://media1.tenor.com/m/Hx5yUAxxYvwAAAAC/buh-b-u-h.gif";
 
     public SuggestInsultCommand() {
+        super("suggestinsult", "Suggest an insult for Brownie to use!");
         iss = MongoManager.getInstance().getInsultSuggestionService();
     }
 
+    @Override
+    public SlashCommandData generateSlashCommand() {
+        return Commands.slash(getName(), getDescription())
+                .addOption(OptionType.STRING, "insult", "The insult to suggest", true);
+    }
+
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        if (event.getName().equals("suggestinsult")) {
+        if (event.getName().equals(getName())) {
             final String insult = event.getOption("insult").getAsString();
             event.reply("Suggestion sent!").queue();
 

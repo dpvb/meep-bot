@@ -8,11 +8,12 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.Optional;
 
-public class StatCheckCommand extends ListenerAdapter {
+public class StatCheckCommand extends Command {
 
     private final MessageStatsService mss;
 
     public StatCheckCommand() {
+        super("statcheck", "Get your message stats");
         this.mss = MongoManager.getInstance().getMessageStatsService();
     }
 

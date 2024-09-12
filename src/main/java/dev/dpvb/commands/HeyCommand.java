@@ -1,13 +1,16 @@
 package dev.dpvb.commands;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public class HeyCommand extends ListenerAdapter {
+public class HeyCommand extends Command {
+
+    public HeyCommand() {
+        super("hey", "Say hey!");
+    }
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        if (event.getName().equals("hey")) {
+        if (event.getName().equals(getName())) {
             event.reply("Hey there!").queue();
         }
     }

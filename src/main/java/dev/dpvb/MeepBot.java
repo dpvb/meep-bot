@@ -1,9 +1,6 @@
 package dev.dpvb;
 
-import dev.dpvb.commands.HeyCommand;
-import dev.dpvb.commands.InsultsCommand;
-import dev.dpvb.commands.StatCheckCommand;
-import dev.dpvb.commands.SuggestInsultCommand;
+import dev.dpvb.commands.*;
 import dev.dpvb.leaderboards.PlinkLeaderboard;
 import dev.dpvb.listeners.*;
 import dev.dpvb.util.ProcessorUtil;
@@ -15,6 +12,10 @@ import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MeepBot {
 
@@ -60,20 +61,24 @@ public class MeepBot {
     }
 
     private static void registerCommands() {
-        jda.updateCommands().addCommands(
-                Commands.slash("hey", "Say hey!"),
-                Commands.slash("statcheck", "Get your message stats"),
-                Commands.slash("allstats", "Get server message stats"),
-                Commands.slash("suggestinsult", "Suggest an insult for Brownie to use")
-                        .addOption(OptionType.STRING, "insult", "The insult to suggest", true),
-                Commands.slash("insults", "Lists all insults of Brownie's insults")
-                        .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
-        ).queue();
-        jda.addEventListener(new HeyCommand());
-        jda.addEventListener(new StatCheckCommand());
-        jda.addEventListener(new SuggestInsultCommand());
-        jda.addEventListener(new InsultsCommand());
-        jda.retrieveCommands().complete()
+        // Add the commands...
+        Set<Command> commands = new HashSet<>();
+        commands.add(new HeyCommand());
+        commands.add(new SuggestInsultCommand());
+        commands.add(new InsultsCommand());
+
+        // Register the slash commands with Discord
+        jda.updateCommands()
+                .addCommands(commands.stream()
+                        .map(Command::generateSlashCommand)
+                        .collect(Collectors.toList()))
+                .queue();
+
+        // Register the event listeners
+        commands.forEach(command -> jda.addEventListener(command));
+        // Confirm all commands have been added.
+        jda.retrieveCommands()
+                .complete()
                 .forEach(command -> System.out.println("Registered command: " + command.getName()));
     }
 
