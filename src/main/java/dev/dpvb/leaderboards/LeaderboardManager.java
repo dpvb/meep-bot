@@ -32,6 +32,7 @@ public class LeaderboardManager {
         leaderboards.add(new PlinkLeaderboard());
         leaderboards.add(new BuhLeaderboard());
         leaderboards.add(new MowLeaderboard());
+        leaderboards.add(new HumpDayLeaderboard());
 
         final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         executor.scheduleWithFixedDelay(

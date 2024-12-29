@@ -45,7 +45,7 @@ public class ProcessorUtil {
         for (User user : users) {
             final String username = user.getName();
             final String discordID = user.getId();
-            final MessageStats messageStats = new MessageStats(discordID, username, 0, 0, 0, 0);
+            final MessageStats messageStats = new MessageStats(discordID, username, 0, 0, 0, 0, 0);
             messageStatMap.put(username, messageStats);
         }
 
@@ -66,6 +66,8 @@ public class ProcessorUtil {
                 messageStatMap.get(sender).buhs++;
             } else if (contentRaw.equalsIgnoreCase("mow")) {
                 messageStatMap.get(sender).mows++;
+            } else if (contentRaw.equals("HUMP DAY")) {
+                messageStatMap.get(sender).humpDays++;
             }
 
             messageStatMap.get(sender).totalMessages++;

@@ -25,6 +25,8 @@ public class MessageStatListener extends ListenerAdapter {
             mss.addBuh(discordID, username);
         } else if (message.equalsIgnoreCase("mow")) {
             mss.addMow(discordID, username);
+        } else if (message.equals("HUMP DAY")) {
+            mss.addHumpDay(discordID, username);
         } else {
             mss.addMessage(discordID, username);
         }

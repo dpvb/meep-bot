@@ -10,22 +10,24 @@ public class MessageStats {
     public int plinks;
     public int mows;
     public int buhs;
+    public int humpDays;
 
     public MessageStats() {
 
     }
 
     public MessageStats(String discordID, String username) {
-        this(discordID, username, 0, 0, 0, 0);
+        this(discordID, username, 0, 0, 0, 0, 0);
     }
 
-    public MessageStats(String discordID, String username, int totalMessages, int plinks, int mows, int buhs) {
+    public MessageStats(String discordID, String username, int totalMessages, int plinks, int mows, int buhs, int humpDays) {
         this.discordID = discordID;
         this.username = username;
         this.totalMessages = totalMessages;
         this.plinks = plinks;
         this.mows = mows;
         this.buhs = buhs;
+        this.humpDays = humpDays;
     }
 
     public String getDiscordID() {
@@ -76,6 +78,14 @@ public class MessageStats {
         this.buhs = buhs;
     }
 
+    public int getHumpDays() {
+        return humpDays;
+    }
+
+    public void setHumpDays(int humpDays) {
+        this.humpDays = humpDays;
+    }
+
     public void addMessage(MessageType type) {
         // always increment totalMessages
         this.totalMessages++;
@@ -90,6 +100,10 @@ public class MessageStats {
             }
             case MOW: {
                 this.mows++;
+                break;
+            }
+            case HUMP_DAY: {
+                this.humpDays++;
                 break;
             }
             case OTHER: {
