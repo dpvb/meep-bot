@@ -38,6 +38,10 @@ public class MessageStatsService extends MongoService<MessageStats> {
         addOrUpdateType(discordId, username, MessageType.MOW);
     }
 
+    public void addHumpDay(String discordId, String username) {
+        addOrUpdateType(discordId, username, MessageType.HUMP_DAY);
+    }
+
     public void addMessage(String discordId, String username) {
         addOrUpdateType(discordId, username, MessageType.OTHER);
     }
