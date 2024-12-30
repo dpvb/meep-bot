@@ -2,8 +2,11 @@ package dev.dpvb.listeners;
 
 import dev.dpvb.mongo.MongoManager;
 import dev.dpvb.mongo.services.MessageStatsService;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+
+import java.time.DayOfWeek;
 
 public class MessageStatListener extends ListenerAdapter {
 
@@ -17,15 +20,17 @@ public class MessageStatListener extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         final String username = event.getAuthor().getName();
         final String discordID = event.getAuthor().getId();
-        final String message = event.getMessage().getContentRaw();
+        final Message message = event.getMessage();
+        final String content = message.getContentRaw();
 
-        if (message.equals("plink")) {
+        if (content.equals("plink")) {
             mss.addPlink(discordID, username);
-        } else if (message.equals("buh")) {
+        } else if (content.equals("buh")) {
             mss.addBuh(discordID, username);
-        } else if (message.equalsIgnoreCase("mow")) {
+        } else if (content.equalsIgnoreCase("mow")) {
             mss.addMow(discordID, username);
-        } else if (message.equals("HUMP DAY")) {
+        } else if (content.equals("HUMP DAY")
+                && message.getTimeCreated().getDayOfWeek().equals(DayOfWeek.WEDNESDAY)) {
             mss.addHumpDay(discordID, username);
         } else {
             mss.addMessage(discordID, username);
