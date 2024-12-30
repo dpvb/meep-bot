@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +67,7 @@ public class ProcessorUtil {
                 messageStatMap.get(sender).buhs++;
             } else if (contentRaw.equalsIgnoreCase("mow")) {
                 messageStatMap.get(sender).mows++;
-            } else if (contentRaw.equals("HUMP DAY")) {
+            } else if (contentRaw.equals("HUMP DAY") && m.getTimeCreated().getDayOfWeek().equals(DayOfWeek.WEDNESDAY)) {
                 messageStatMap.get(sender).humpDays++;
             }
 
