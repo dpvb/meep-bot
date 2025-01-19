@@ -2,7 +2,6 @@ package dev.dpvb.jobs;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
@@ -45,21 +44,35 @@ public class WordleWinnerJob extends Job {
             scores.put(submission.getAuthor(), getScore(submission.getContentRaw()));
         });
 
-        final Map.Entry<User, Integer> lowestScoreEntry = getLowestScoreEntry(scores);
+        List<Map.Entry<User, Integer>> lowestScores = getLowestScores(scores);
 
-        if (lowestScoreEntry == null) {
+        if (lowestScores == null || lowestScores.isEmpty()) {
             wordleChannel.sendMessage("No one submitted anything for the Wordle today :C").queue();
             return;
         }
 
-        wordleChannel.sendMessage(String.format("<@%s> got the best wordle score: %d", lowestScoreEntry.getKey().getId(), lowestScoreEntry.getValue())).queue();
-
+        final String msgTitle = "\uD83C\uDFC6 **Wordle Winners Today** \uD83C\uDFC6";
+        final StringBuilder sb = new StringBuilder();
+        lowestScores.forEach(scoreEntry -> {
+            sb.append("\n");
+            sb.append(String.format("<@%s> (%d)", scoreEntry.getKey().getId(), scoreEntry.getValue()));
+        });
+        final String winnersText = sb.toString();
+        wordleChannel.sendMessage(msgTitle + winnersText).queue();
     }
 
-    private Map.Entry<User, Integer> getLowestScoreEntry(Map<User, Integer> scores) {
+    private List<Map.Entry<User, Integer>> getLowestScores(Map<User, Integer> scores) {
+        int lowestScore = scores.values().stream()
+                .min(Integer::compareTo)
+                .orElse(Integer.MAX_VALUE);
+
+        if (lowestScore == Integer.MAX_VALUE) {
+            return null;
+        }
+
         return scores.entrySet().stream()
-                .min(Map.Entry.comparingByValue())
-                .orElse(null);
+                .filter(entry -> entry.getValue() == lowestScore)
+                .collect(Collectors.toList());
     }
 
     private boolean isWordleSubmission(String message) {
