@@ -1,6 +1,7 @@
 package dev.dpvb;
 
 import dev.dpvb.commands.*;
+import dev.dpvb.jobs.JobManager;
 import dev.dpvb.leaderboards.LeaderboardManager;
 import dev.dpvb.listeners.*;
 import dev.dpvb.util.ProcessorUtil;
@@ -35,6 +36,9 @@ public class MeepBot {
 
         // initialize leaderboard manager
         LeaderboardManager.init(jda);
+
+        // initialize job manager
+        JobManager.init(jda);
 
         if (args.length == 1) {
             if (args[0].equals("process-messages")) {
