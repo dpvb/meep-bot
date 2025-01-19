@@ -79,7 +79,7 @@ public class WordleWinnerJob extends Job {
 
         final String scoreString = split[2];
         final String[] scoreArray = scoreString.split("/");
-        if (scoreArray.length != 2) {
+        if (scoreArray.length != 2 || "X".equals(scoreArray[0])) {
             return Integer.MAX_VALUE;
         }
 
