@@ -55,6 +55,7 @@ public class MeepBot {
         jda.addEventListener(new GifListener());
         jda.addEventListener(new InsultListener());
         jda.addEventListener(new MessageStatListener());
+        jda.addEventListener(new WordleMessageListener());
     }
 
     private static void registerCommands() {

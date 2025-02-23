@@ -1,5 +1,6 @@
 package dev.dpvb.jobs;
 
+import dev.dpvb.util.Constants;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -14,18 +15,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 public class WordleWinnerJob extends Job {
 
     private JDA jda;
-    private static final long wordleChannelId = 1326175839884148867L;
 
     public WordleWinnerJob(JDA jda) {
         this.jda = jda;
     }
 
     public void run() {
-        final TextChannel wordleChannel = jda.getTextChannelById(wordleChannelId);
+        final TextChannel wordleChannel = jda.getTextChannelById(Constants.Wordle.CHANNEL_ID);
         if (wordleChannel == null) {
             System.out.println("Error: Could not retrieve Wordle Channel");
             return;
@@ -35,7 +34,8 @@ public class WordleWinnerJob extends Job {
 
         final List<Message> lastDayWordleSubmissions = wordleChannel.getIterableHistory()
                 .stream()
-                .filter(message -> message.getTimeCreated().isAfter(yesterday) && isWordleSubmission(message.getContentRaw()))
+                .filter(message -> message.getTimeCreated().isAfter(yesterday)
+                        && isWordleSubmission(message.getContentRaw()))
                 .collect(Collectors.toList());
 
         final Map<User, Integer> scores = new HashMap<>();
@@ -105,7 +105,6 @@ public class WordleWinnerJob extends Job {
 
         return score;
     }
-
 
     @Override
     protected long getInitialDelay() {
