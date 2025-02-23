@@ -96,7 +96,14 @@ public class WordleWinnerJob extends Job {
             return Integer.MAX_VALUE;
         }
 
-        return Integer.parseInt(scoreArray[0]);
+        int score;
+        try {
+            score = Integer.parseInt(scoreArray[0]);
+        } catch (NumberFormatException ignore) {
+            score = Integer.MAX_VALUE;
+        }
+
+        return score;
     }
 
 
