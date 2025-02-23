@@ -55,7 +55,6 @@ public class MeepBot {
         jda.addEventListener(new GifListener());
         jda.addEventListener(new InsultListener());
         jda.addEventListener(new MessageStatListener());
-        // jda.addEventListener(new JudgeListener());
     }
 
     private static void registerCommands() {
@@ -64,7 +63,6 @@ public class MeepBot {
         commands.add(new HeyCommand());
         commands.add(new SuggestInsultCommand());
         commands.add(new InsultsCommand());
-//        commands.add(new EmbedCommand());
 
         // Register the slash commands with Discord
         jda.updateCommands()
