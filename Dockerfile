@@ -1,11 +1,13 @@
-FROM maven:3.8.5-openjdk-11-slim AS build
+FROM maven:3.9.9-amazoncorretto-17 AS build
+
 COPY ./pom.xml ./pom.xml
+RUN mvn dependency:go-offline -B
+
 COPY ./src ./src
 COPY .env ./.env
-RUN mvn dependency:go-offline -B
 RUN mvn clean package
 
-FROM adoptopenjdk/openjdk11:jdk-11.0.12_7-alpine
+FROM amazoncorretto:17
 WORKDIR /app
 COPY --from=build /target/MeepBot.jar ./MeepBot.jar
 COPY --from=build ./.env ./.env
