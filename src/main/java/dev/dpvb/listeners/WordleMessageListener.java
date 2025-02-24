@@ -2,7 +2,6 @@ package dev.dpvb.listeners;
 
 import dev.dpvb.mongo.MongoManager;
 import dev.dpvb.mongo.models.WordleEntry;
-import dev.dpvb.mongo.models.WordleMessageDTO;
 import dev.dpvb.mongo.services.WordleEntryService;
 import dev.dpvb.util.Constants;
 import dev.dpvb.wordle.WordleMessage;
@@ -35,8 +34,7 @@ public class WordleMessageListener extends ListenerAdapter {
             return;
         }
 
-        WordleMessageDTO messageDTO = new WordleMessageDTO(wordleMessageOp.get());
-        WordleEntry wordleEntry = new WordleEntry(author.getId(), author.getName(), messageDTO);
+        WordleEntry wordleEntry = new WordleEntry(author.getId(), author.getName(), wordleMessageOp.get());
         wes.addOrUpdateEntry(wordleEntry);
     }
 

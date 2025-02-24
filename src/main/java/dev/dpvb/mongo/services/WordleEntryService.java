@@ -14,7 +14,9 @@ public class WordleEntryService extends MongoService<WordleEntry> {
     }
 
     public void addOrUpdateEntry(WordleEntry entry) {
-        Bson filter = and(eq("discordID", entry.discordID), eq("message.wordleNumber", entry.message.wordleNumber));
+        Bson filter = and(
+                eq("discordID", entry.discordID),
+                eq("message.wordleNumber", entry.message.getWordleNumber()));
 
         WordleEntry findRes = collection.find(filter).first();
 
