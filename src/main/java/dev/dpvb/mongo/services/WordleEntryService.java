@@ -4,6 +4,9 @@ import com.mongodb.client.MongoDatabase;
 import dev.dpvb.mongo.models.WordleEntry;
 import org.bson.conversions.Bson;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
@@ -25,6 +28,11 @@ public class WordleEntryService extends MongoService<WordleEntry> {
         } else {
             collection.replaceOne(filter, entry);
         }
+    }
+
+    public List<WordleEntry> getEntriesByWordleNumber(int wordleNumber) {
+        final Bson filter = eq("message.wordleNumber", wordleNumber);
+        return collection.find(filter).into(new ArrayList<>());
     }
 
 }

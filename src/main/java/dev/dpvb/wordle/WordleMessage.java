@@ -45,27 +45,31 @@ public class WordleMessage {
         if (wordleNumOp.isEmpty()) {
             return Optional.empty();
         }
+        int wordleNumber = wordleNumOp.get();
 
         String guessCountStr = headerMatcher.group(4);
-        Optional<Integer> guessCountOp = safeParseInt(guessCountStr);
-        if (guessCountOp.isEmpty()) {
-            return Optional.empty();
-        }
-
-        int wordleNumber = wordleNumOp.get();
-        int guessCount = guessCountOp.get();
-        boolean hardMode = headerMatcher.group(5) != null;
+        // Regex is being matched in the header matcher above, so this has already been validated. Thus, if it is not
+        // a number between 1-6 it must be X.
+        int guessCount = safeParseInt(guessCountStr).orElse(-1);
 
         if (!(guessCount == -1 || (1 <= guessCount && guessCount <= 6))) {
             // invalid count
             return Optional.empty();
         }
 
+        boolean hardMode = headerMatcher.group(5) != null;
+
         String[] guessStrs = pieces[1].split("\n");
-        if (guessStrs.length > guessCount) {
+        if (guessCount == -1 && guessStrs.length > 6) {
+            // If someone got scored X, and they wrote stuff after they pasted their score.
+            String[] trimmed = new String[6];
+            System.arraycopy(guessStrs, 0, trimmed, 0, 6);
+            guessStrs = trimmed;
+
+        } else if (guessCount != -1 && guessStrs.length > guessCount) {
+            // If someone got a score in range [1,6] and we need to trim the guesses down.
             String[] trimmed = new String[guessCount];
             System.arraycopy(guessStrs, 0, trimmed, 0, guessCount);
-
             guessStrs = trimmed;
         }
 

@@ -1,15 +1,13 @@
 package dev.dpvb.jobs;
 
+import dev.dpvb.mongo.MongoManager;
+import dev.dpvb.mongo.models.WordleEntry;
+import dev.dpvb.mongo.services.WordleEntryService;
 import dev.dpvb.util.Constants;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
-import java.time.Duration;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class WordleWinnerJob extends Job {
 
-    private JDA jda;
+    private final JDA jda;
 
     public WordleWinnerJob(JDA jda) {
         this.jda = jda;
@@ -26,25 +24,25 @@ public class WordleWinnerJob extends Job {
     public void run() {
         final TextChannel wordleChannel = jda.getTextChannelById(Constants.Wordle.CHANNEL_ID);
         if (wordleChannel == null) {
-            System.out.println("Error: Could not retrieve Wordle Channel");
+            System.out.println("Error: Could not retreive Wordle Channel");
             return;
         }
 
-        final OffsetDateTime yesterday = OffsetDateTime.now().minusDays(1);
+        final WordleEntryService wes = MongoManager.getInstance().getWordleEntryService();
 
-        final List<Message> lastDayWordleSubmissions = wordleChannel.getIterableHistory()
-                .stream()
-                .filter(message -> message.getTimeCreated().isAfter(yesterday)
-                        && isWordleSubmission(message.getContentRaw()))
-                .collect(Collectors.toList());
+        final LocalDate yesterday = LocalDate.now().minusDays(1);
+        final int wordleNumber = Period.between(Constants.Wordle.INITIAL_DATE, yesterday).getDays();
 
-        final Map<User, Integer> scores = new HashMap<>();
+        final List<WordleEntry> wordleEntries = wes.getEntriesByWordleNumber(wordleNumber);
 
-        lastDayWordleSubmissions.forEach(submission -> {
-            scores.put(submission.getAuthor(), getScore(submission.getContentRaw()));
-        });
+        final Map<String, Integer> scores = new HashMap<>();
 
-        List<Map.Entry<User, Integer>> lowestScores = getLowestScores(scores);
+        // Filter out -1 scores and put the potential winning scores in the map.
+        wordleEntries.stream()
+                .filter(wordleEntry -> wordleEntry.message.getGuessCount() != -1)
+                .forEach(wordleEntry -> scores.put(wordleEntry.getDiscordID(), wordleEntry.getMessage().getGuessCount()));
+
+        final List<Map.Entry<String, Integer>> lowestScores = getLowestScores(scores);
 
         if (lowestScores == null || lowestScores.isEmpty()) {
             wordleChannel.sendMessage("No one submitted anything for the Wordle today :C").queue();
@@ -55,13 +53,13 @@ public class WordleWinnerJob extends Job {
         final StringBuilder sb = new StringBuilder();
         lowestScores.forEach(scoreEntry -> {
             sb.append("\n");
-            sb.append(String.format("<@%s> (%d)", scoreEntry.getKey().getId(), scoreEntry.getValue()));
+            sb.append(String.format("<@%s> (%d)", scoreEntry.getKey(), scoreEntry.getValue()));
         });
         final String winnersText = sb.toString();
         wordleChannel.sendMessage(msgTitle + winnersText).queue();
     }
 
-    private List<Map.Entry<User, Integer>> getLowestScores(Map<User, Integer> scores) {
+    private List<Map.Entry<String, Integer>> getLowestScores(Map<String, Integer> scores) {
         int lowestScore = scores.values().stream()
                 .min(Integer::compareTo)
                 .orElse(Integer.MAX_VALUE);
@@ -75,43 +73,12 @@ public class WordleWinnerJob extends Job {
                 .collect(Collectors.toList());
     }
 
-    private boolean isWordleSubmission(String message) {
-        final String[] split = message.split(" ");
-        if (split.length < 3) {
-            return false;
-        }
-
-        return "Wordle".equals(split[0]);
-    }
-
-    private int getScore(String message) {
-        final String[] split = message.split(" ");
-        if (split.length < 3) {
-            return Integer.MAX_VALUE;
-        }
-
-        final String scoreString = split[2];
-        final String[] scoreArray = scoreString.split("/");
-        if (scoreArray.length != 2 || "X".equals(scoreArray[0])) {
-            return Integer.MAX_VALUE;
-        }
-
-        int score;
-        try {
-            score = Integer.parseInt(scoreArray[0]);
-        } catch (NumberFormatException ignore) {
-            score = Integer.MAX_VALUE;
-        }
-
-        return score;
-    }
-
     @Override
     protected long getInitialDelay() {
         final ZonedDateTime now = ZonedDateTime.now(ZoneId.of("America/New_York"));
-        final ZonedDateTime midnight = now.withHour(0).withMinute(0).withSecond(0).withNano(0).plusDays(1);
+        final ZonedDateTime three_am_next_day = now.withHour(3).withMinute(0).withSecond(0).withNano(0).plusDays(1);
 
-        return Duration.between(now, midnight).toMillis();
+        return Duration.between(now, three_am_next_day).toMillis();
     }
 
     @Override
