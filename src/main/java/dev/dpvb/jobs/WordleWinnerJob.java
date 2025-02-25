@@ -35,12 +35,14 @@ public class WordleWinnerJob extends Job {
 
         final List<WordleEntry> wordleEntries = wes.getEntriesByWordleNumber(wordleNumber);
 
-        final Map<String, Integer> scores = new HashMap<>();
 
         // Filter out -1 scores and put the potential winning scores in the map.
-        wordleEntries.stream()
+        final Map<String, Integer> scores = wordleEntries.stream()
                 .filter(wordleEntry -> wordleEntry.message.getGuessCount() != -1)
-                .forEach(wordleEntry -> scores.put(wordleEntry.getDiscordID(), wordleEntry.getMessage().getGuessCount()));
+                .collect(Collectors.toMap(
+                        WordleEntry::getDiscordID,
+                        wordleEntry -> wordleEntry.getMessage().getGuessCount()
+                ));
 
         final List<Map.Entry<String, Integer>> lowestScores = getLowestScores(scores);
 
