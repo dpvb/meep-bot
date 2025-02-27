@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ public class WordleWinnerJob extends Job {
         final WordleEntryService wes = MongoManager.getInstance().getWordleEntryService();
 
         final LocalDate yesterday = LocalDate.now().minusDays(1);
-        final int wordleNumber = Period.between(Constants.Wordle.INITIAL_DATE, yesterday).getDays();
+        final int wordleNumber = (int) ChronoUnit.DAYS.between(Constants.Wordle.INITIAL_DATE, yesterday);
 
         final List<WordleEntry> wordleEntries = wes.getEntriesByWordleNumber(wordleNumber);
 
