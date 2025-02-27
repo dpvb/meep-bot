@@ -46,6 +46,7 @@ public class MeepBot {
                 case "process-users" -> ProcessorUtil.processUsers(jda);
                 case "process-wordle" -> ProcessorUtil.processWordle(jda);
             }
+            System.exit(0);
         }
     }
 

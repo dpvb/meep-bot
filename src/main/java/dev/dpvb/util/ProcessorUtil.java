@@ -83,8 +83,6 @@ public class ProcessorUtil {
                 });
 
         System.out.println("Done processing users.");
-
-        System.exit(0); // exit success
     }
 
     public static void processWordle(JDA jda) {
@@ -106,11 +104,12 @@ public class ProcessorUtil {
 
             Optional<WordleMessage> wordleMessageOp = WordleMessage.messageFrom(content);
             if (wordleMessageOp.isEmpty()) {
-                return;
+                continue;
             }
 
             WordleEntry wordleEntry = new WordleEntry(author.getId(), author.getName(), wordleMessageOp.get());
             wes.addOrUpdateEntry(wordleEntry);
+            System.out.println("Stored wordle entry #" + wordleEntry.getMessage().getWordleNumber() + " from " + wordleEntry.getUsername());
         }
 
         System.out.println("Done processing wordle messages.");
