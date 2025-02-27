@@ -104,8 +104,6 @@ public class WordleGuess {
         CORRECT;
 
         public static Optional<CellType> fromCodePoint(int codePoint) {
-            System.out.println("Checking gChar = '" + Integer.toHexString(codePoint) + "'");
-
             Optional<CellType> type = switch (codePoint) {
                 case LARGE_WHITE_SQUARE, LARGE_BLACK_SQUARE -> Optional.of(INCORRECT);
                 case LARGE_YELLOW_SQUARE -> Optional.of(MISPLACED);

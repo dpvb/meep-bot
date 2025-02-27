@@ -41,10 +41,10 @@ public class MeepBot {
         JobManager.init(jda);
 
         if (args.length == 1) {
-            if (args[0].equals("process-messages")) {
-                ProcessorUtil.processMessages(jda);
-            } else if (args[0].equals("process-users")) {
-                ProcessorUtil.processUsers(jda);
+            switch (args[0]) {
+                case "process-messages" -> ProcessorUtil.processMessages(jda);
+                case "process-users" -> ProcessorUtil.processUsers(jda);
+                case "process-wordle" -> ProcessorUtil.processWordle(jda);
             }
         }
     }

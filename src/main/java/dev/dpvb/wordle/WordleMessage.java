@@ -84,8 +84,6 @@ public class WordleMessage {
             return Optional.empty();
         }
 
-        System.out.println("Successfully created a WordleMessage");
-
         WordleMessage message = new WordleMessage(wordleNumber, guessCount, hardMode, guesses);
         return Optional.of(message);
     }
