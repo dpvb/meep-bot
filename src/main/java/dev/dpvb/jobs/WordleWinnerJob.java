@@ -1,115 +1,79 @@
 package dev.dpvb.jobs;
 
+import dev.dpvb.mongo.MongoManager;
+import dev.dpvb.mongo.models.WordleEntry;
+import dev.dpvb.mongo.services.WordleEntryService;
+import dev.dpvb.util.Constants;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
-import java.time.Duration;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.HashMap;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-
+import java.util.stream.Stream;
 
 public class WordleWinnerJob extends Job {
 
-    private JDA jda;
-    private static final long wordleChannelId = 1326175839884148867L;
+    private final JDA jda;
 
     public WordleWinnerJob(JDA jda) {
         this.jda = jda;
     }
 
     public void run() {
-        final TextChannel wordleChannel = jda.getTextChannelById(wordleChannelId);
+        final TextChannel wordleChannel = jda.getTextChannelById(Constants.Wordle.CHANNEL_ID);
         if (wordleChannel == null) {
-            System.out.println("Error: Could not retrieve Wordle Channel");
+            System.err.println("Error: Could not retrieve Wordle Channel");
             return;
         }
 
-        final OffsetDateTime yesterday = OffsetDateTime.now().minusDays(1);
+        final WordleEntryService wes = MongoManager.getInstance().getWordleEntryService();
 
-        final List<Message> lastDayWordleSubmissions = wordleChannel.getIterableHistory()
-                .stream()
-                .filter(message -> message.getTimeCreated().isAfter(yesterday) && isWordleSubmission(message.getContentRaw()))
-                .collect(Collectors.toList());
+        final LocalDate yesterday = LocalDate.now().minusDays(1);
+        final int wordleNumber = (int) ChronoUnit.DAYS.between(Constants.Wordle.INITIAL_DATE, yesterday);
 
-        final Map<User, Integer> scores = new HashMap<>();
+        final List<WordleEntry> wordleEntries = wes.getEntriesByWordleNumber(wordleNumber);
 
-        lastDayWordleSubmissions.forEach(submission -> {
-            scores.put(submission.getAuthor(), getScore(submission.getContentRaw()));
-        });
-
-        List<Map.Entry<User, Integer>> lowestScores = getLowestScores(scores);
-
-        if (lowestScores == null || lowestScores.isEmpty()) {
+        if (wordleEntries.isEmpty()) {
             wordleChannel.sendMessage("No one submitted anything for the Wordle today :C").queue();
             return;
         }
 
+        // Filter out -1 scores and sort the rest
+        final List<WordleEntry> sortedScores = wordleEntries.stream()
+                .filter(entry -> entry.getMessage().getGuessCount() != -1)
+                .sorted(Comparator.comparing(entry -> entry.getMessage().getGuessCount()))
+                .toList();
+
+        if (sortedScores.isEmpty()) {
+            wordleChannel.sendMessage("No one won the Wordle today :C").queue();
+            return;
+        }
+
+        int lowestScore = sortedScores.get(0).getMessage().getGuessCount();
+        final List<WordleEntry> lowestScores = sortedScores.stream()
+                .takeWhile(e -> e.getMessage().getGuessCount() == lowestScore)
+                .toList();
+
         final String msgTitle = "\uD83C\uDFC6 **Wordle Winners Today** \uD83C\uDFC6";
-        final StringBuilder sb = new StringBuilder();
-        lowestScores.forEach(scoreEntry -> {
-            sb.append("\n");
-            sb.append(String.format("<@%s> (%d)", scoreEntry.getKey().getId(), scoreEntry.getValue()));
-        });
-        final String winnersText = sb.toString();
-        wordleChannel.sendMessage(msgTitle + winnersText).queue();
+        final String winnersText2 = Stream
+                .concat(Stream.of(msgTitle), lowestScores.stream().map(WordleWinnerJob::entryToMessage))
+                .collect(Collectors.joining("\n"));
+
+        wordleChannel.sendMessage(winnersText2).queue();
     }
 
-    private List<Map.Entry<User, Integer>> getLowestScores(Map<User, Integer> scores) {
-        int lowestScore = scores.values().stream()
-                .min(Integer::compareTo)
-                .orElse(Integer.MAX_VALUE);
-
-        if (lowestScore == Integer.MAX_VALUE) {
-            return null;
-        }
-
-        return scores.entrySet().stream()
-                .filter(entry -> entry.getValue() == lowestScore)
-                .collect(Collectors.toList());
+    private static String entryToMessage(WordleEntry scoreEntry) {
+        return String.format("<@%s> (%d)", scoreEntry.getDiscordID(), scoreEntry.getMessage().getGuessCount());
     }
-
-    private boolean isWordleSubmission(String message) {
-        final String[] split = message.split(" ");
-        if (split.length < 3) {
-            return false;
-        }
-
-        return "Wordle".equals(split[0]);
-    }
-
-    private int getScore(String message) {
-        final String[] split = message.split(" ");
-        if (split.length < 3) {
-            return Integer.MAX_VALUE;
-        }
-
-        final String scoreString = split[2];
-        final String[] scoreArray = scoreString.split("/");
-        if (scoreArray.length != 2 || "X".equals(scoreArray[0])) {
-            return Integer.MAX_VALUE;
-        }
-
-        int score;
-        try {
-            score = Integer.parseInt(scoreArray[0]);
-        } catch (NumberFormatException ignore) {
-            score = Integer.MAX_VALUE;
-        }
-
-        return score;
-    }
-
 
     @Override
     protected long getInitialDelay() {
-        final ZonedDateTime now = ZonedDateTime.now(ZoneId.of("America/New_York"));
+        // start the job at midnight in Pacific Time since that is the latest
+        // time zone in the server at the moment
+        final ZonedDateTime now = ZonedDateTime.now(ZoneId.of("America/Los_Angeles"));
         final ZonedDateTime midnight = now.withHour(0).withMinute(0).withSecond(0).withNano(0).plusDays(1);
 
         return Duration.between(now, midnight).toMillis();

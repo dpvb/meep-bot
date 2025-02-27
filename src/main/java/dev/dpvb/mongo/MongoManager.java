@@ -8,7 +8,7 @@ import com.mongodb.client.MongoDatabase;
 import dev.dpvb.MeepBot;
 import dev.dpvb.mongo.services.InsultSuggestionService;
 import dev.dpvb.mongo.services.MessageStatsService;
-import io.github.cdimascio.dotenv.Dotenv;
+import dev.dpvb.mongo.services.WordleEntryService;
 import org.bson.codecs.configuration.CodecRegistry;
 
 import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
@@ -21,15 +21,15 @@ public class MongoManager {
     private static MongoManager instance;
     private final MessageStatsService messageStatsService;
     private final InsultSuggestionService insultSuggestionService;
+    private final WordleEntryService wordleEntryService;
 
     private MongoManager() {
         final ConnectionString connectionString = new ConnectionString(MeepBot.Environment.getMongoURI());
         final CodecRegistry pojoCodecRegistry = fromRegistries(
                 getDefaultCodecRegistry(),
                 fromProviders(
-                        builder().automatic(true).build()
-                )
-        );
+                        builder().automatic(true).build()));
+
         final MongoClientSettings clientSettings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .codecRegistry(pojoCodecRegistry)
@@ -42,6 +42,7 @@ public class MongoManager {
 
         messageStatsService = new MessageStatsService(db);
         insultSuggestionService = new InsultSuggestionService(db);
+        wordleEntryService = new WordleEntryService(db);
     }
 
     public static MongoManager getInstance() {
@@ -58,5 +59,9 @@ public class MongoManager {
 
     public InsultSuggestionService getInsultSuggestionService() {
         return insultSuggestionService;
+    }
+
+    public WordleEntryService getWordleEntryService() {
+        return wordleEntryService;
     }
 }

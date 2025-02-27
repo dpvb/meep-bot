@@ -2,46 +2,30 @@ package dev.dpvb.util;
 
 import dev.dpvb.mongo.MongoManager;
 import dev.dpvb.mongo.models.MessageStats;
+import dev.dpvb.mongo.models.WordleEntry;
 import dev.dpvb.mongo.services.MessageStatsService;
+import dev.dpvb.mongo.services.WordleEntryService;
+import dev.dpvb.wordle.WordleMessage;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.time.DayOfWeek;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class ProcessorUtil {
 
     public static void processMessages(JDA jda) {
         System.out.println("Processing messages...");
-        final long guildID = 1129622683546554479L;
-        final Guild guild = jda.getGuildById(guildID);
-        if (guild == null) {
-            System.out.println("Couldn't find MEEP guild.");
-            System.exit(1);
-        }
+
+        final Guild guild = getGuild(jda);
 
         final List<TextChannel> textChannels = guild.getTextChannels();
-        final List<Message> allMessages = new ArrayList<>();
-
-        // Retrieve all messages from all text channels
-        for (TextChannel textChannel : textChannels) {
-            final MessageHistory history = new MessageHistory(textChannel);
-            List<Message> messages;
-            do {
-                messages = history.retrievePast(100).complete();
-                allMessages.addAll(messages);
-                System.out.println("Added " + messages.size() + " messages from " + textChannel.getName());
-            } while (!messages.isEmpty());
-        }
+        final List<Message> allMessages = getAllMessagesFromChannels(textChannels);
 
         // Retrieve all users and prep message stats.
         final Map<String, MessageStats> messageStatMap = new HashMap<>();
-        final List<User> users = guild.loadMembers().get().stream().map(Member::getUser).collect(Collectors.toList());
+        final List<User> users = guild.loadMembers().get().stream().map(Member::getUser).toList();
 
         for (User user : users) {
             final String username = user.getName();
@@ -84,25 +68,79 @@ public class ProcessorUtil {
         }
 
         System.out.println("Applied stats to MongoDB.");
-
         System.out.println("Done processing messages.");
     }
 
     public static void processUsers(JDA jda) {
-        System.out.println("processing users...");
-        final long guildID = 1129622683546554479L;
-        final Guild guild = jda.getGuildById(guildID);
+        System.out.println("Processing users...");
 
-        if (guild == null) {
-            System.out.println("Couldn't find MEEP guild.");
+        final Guild guild = getGuild(jda);
+
+        guild.loadMembers().get().stream()
+                .map(Member::getUser)
+                .forEach(user -> {
+                    System.out.println("User: " + user.getName() + " ID: " + user.getId());
+                });
+
+        System.out.println("Done processing users.");
+    }
+
+    public static void processWordle(JDA jda) {
+        System.out.println("Processing wordle messages...");
+
+        final Guild guild = getGuild(jda);
+        final WordleEntryService wes = MongoManager.getInstance().getWordleEntryService();
+
+        TextChannel wordleChannel = guild.getTextChannelById(Constants.Wordle.CHANNEL_ID);
+        if (wordleChannel == null) {
+            System.err.println("Couldn't find Wordle text channel.");
             System.exit(1);
         }
 
-        guild.loadMembers().get().stream().map(Member::getUser).forEach(user -> {
-            System.out.println("User: " + user.getName() + " ID: " + user.getId());
-        });
+        List<Message> wordleMessages = getAllMessagesFromChannels(List.of(wordleChannel));
+        for (Message wordleMessage : wordleMessages) {
+            User author = wordleMessage.getAuthor();
+            String content = wordleMessage.getContentRaw();
 
-        System.exit(1);
+            Optional<WordleMessage> wordleMessageOp = WordleMessage.messageFrom(content);
+            if (wordleMessageOp.isEmpty()) {
+                continue;
+            }
+
+            WordleEntry wordleEntry = new WordleEntry(author.getId(), author.getName(), wordleMessageOp.get());
+            wes.addOrUpdateEntry(wordleEntry);
+            System.out.println("Stored wordle entry #" + wordleEntry.getMessage().getWordleNumber() + " from " + wordleEntry.getUsername());
+        }
+
+        System.out.println("Done processing wordle messages.");
+    }
+
+    private static Guild getGuild(JDA jda) {
+        final long guildID = 1129622683546554479L;
+        final Guild guild = jda.getGuildById(guildID);
+        if (guild == null) {
+            System.err.println("Couldn't find MEEP guild.");
+            System.exit(1);
+        }
+        return guild;
+    }
+
+    private static List<Message> getAllMessagesFromChannels(List<TextChannel> textChannels) {
+        final List<Message> allMessages = new ArrayList<>();
+
+        // Retrieve all messages from all text channels
+        for (TextChannel textChannel : textChannels) {
+            final MessageHistory history = new MessageHistory(textChannel);
+
+            List<Message> messages;
+            do {
+                messages = history.retrievePast(100).complete();
+                allMessages.addAll(messages);
+                System.out.println("Added " + messages.size() + " messages from " + textChannel.getName());
+            } while (!messages.isEmpty());
+        }
+
+        return allMessages;
     }
 
 }

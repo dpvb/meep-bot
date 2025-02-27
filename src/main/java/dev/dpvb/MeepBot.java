@@ -41,11 +41,12 @@ public class MeepBot {
         JobManager.init(jda);
 
         if (args.length == 1) {
-            if (args[0].equals("process-messages")) {
-                ProcessorUtil.processMessages(jda);
-            } else if (args[0].equals("process-users")) {
-                ProcessorUtil.processUsers(jda);
+            switch (args[0]) {
+                case "process-messages" -> ProcessorUtil.processMessages(jda);
+                case "process-users" -> ProcessorUtil.processUsers(jda);
+                case "process-wordle" -> ProcessorUtil.processWordle(jda);
             }
+            System.exit(0);
         }
     }
 
@@ -55,7 +56,7 @@ public class MeepBot {
         jda.addEventListener(new GifListener());
         jda.addEventListener(new InsultListener());
         jda.addEventListener(new MessageStatListener());
-        // jda.addEventListener(new JudgeListener());
+        jda.addEventListener(new WordleMessageListener());
     }
 
     private static void registerCommands() {
@@ -64,7 +65,6 @@ public class MeepBot {
         commands.add(new HeyCommand());
         commands.add(new SuggestInsultCommand());
         commands.add(new InsultsCommand());
-//        commands.add(new EmbedCommand());
 
         // Register the slash commands with Discord
         jda.updateCommands()

@@ -15,14 +15,11 @@ public class JoinListener extends ListenerAdapter {
         final long roleID = 1180259292125859941L;
         final Role role = guild.getRoleById(roleID);
         if (role == null) {
-            System.out.println("The MEEPER role was not found!");
+            System.err.println("The MEEPER role was not found!");
             return;
         }
 
-        guild.addRoleToMember(
-                event.getMember(),
-                role
-        ).queue();
+        guild.addRoleToMember(event.getMember(), role).queue();
 
         final String memberName = event.getMember().getEffectiveName();
         Optional.ofNullable(guild.getDefaultChannel())
