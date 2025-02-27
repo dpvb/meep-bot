@@ -8,10 +8,10 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.time.*;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class WordleWinnerJob extends Job {
 
@@ -24,7 +24,7 @@ public class WordleWinnerJob extends Job {
     public void run() {
         final TextChannel wordleChannel = jda.getTextChannelById(Constants.Wordle.CHANNEL_ID);
         if (wordleChannel == null) {
-            System.out.println("Error: Could not retreive Wordle Channel");
+            System.err.println("Error: Could not retrieve Wordle Channel");
             return;
         }
 
@@ -35,52 +35,47 @@ public class WordleWinnerJob extends Job {
 
         final List<WordleEntry> wordleEntries = wes.getEntriesByWordleNumber(wordleNumber);
 
-
-        // Filter out -1 scores and put the potential winning scores in the map.
-        final Map<String, Integer> scores = wordleEntries.stream()
-                .filter(wordleEntry -> wordleEntry.message.getGuessCount() != -1)
-                .collect(Collectors.toMap(
-                        WordleEntry::getDiscordID,
-                        wordleEntry -> wordleEntry.getMessage().getGuessCount()
-                ));
-
-        final List<Map.Entry<String, Integer>> lowestScores = getLowestScores(scores);
-
-        if (lowestScores == null || lowestScores.isEmpty()) {
+        if (wordleEntries.isEmpty()) {
             wordleChannel.sendMessage("No one submitted anything for the Wordle today :C").queue();
             return;
         }
 
-        final String msgTitle = "\uD83C\uDFC6 **Wordle Winners Today** \uD83C\uDFC6";
-        final StringBuilder sb = new StringBuilder();
-        lowestScores.forEach(scoreEntry -> {
-            sb.append("\n");
-            sb.append(String.format("<@%s> (%d)", scoreEntry.getKey(), scoreEntry.getValue()));
-        });
-        final String winnersText = sb.toString();
-        wordleChannel.sendMessage(msgTitle + winnersText).queue();
-    }
+        // Filter out -1 scores and sort the rest
+        final List<WordleEntry> sortedScores = wordleEntries.stream()
+                .filter(entry -> entry.getMessage().getGuessCount() != -1)
+                .sorted(Comparator.comparing(entry -> entry.getMessage().getGuessCount()))
+                .toList();
 
-    private List<Map.Entry<String, Integer>> getLowestScores(Map<String, Integer> scores) {
-        int lowestScore = scores.values().stream()
-                .min(Integer::compareTo)
-                .orElse(Integer.MAX_VALUE);
-
-        if (lowestScore == Integer.MAX_VALUE) {
-            return null;
+        if (sortedScores.isEmpty()) {
+            wordleChannel.sendMessage("No one won the Wordle today :C").queue();
+            return;
         }
 
-        return scores.entrySet().stream()
-                .filter(entry -> entry.getValue() == lowestScore)
-                .collect(Collectors.toList());
+        int lowestScore = sortedScores.get(0).getMessage().getGuessCount();
+        final List<WordleEntry> lowestScores = sortedScores.stream()
+                .takeWhile(e -> e.getMessage().getGuessCount() == lowestScore)
+                .toList();
+
+        final String msgTitle = "\uD83C\uDFC6 **Wordle Winners Today** \uD83C\uDFC6";
+        final String winnersText2 = Stream
+                .concat(Stream.of(msgTitle), lowestScores.stream().map(WordleWinnerJob::entryToMessage))
+                .collect(Collectors.joining("\n"));
+
+        wordleChannel.sendMessage(winnersText2).queue();
+    }
+
+    private static String entryToMessage(WordleEntry scoreEntry) {
+        return String.format("<@%s> (%d)", scoreEntry.getDiscordID(), scoreEntry.getMessage().getGuessCount());
     }
 
     @Override
     protected long getInitialDelay() {
-        final ZonedDateTime now = ZonedDateTime.now(ZoneId.of("America/New_York"));
-        final ZonedDateTime three_am_next_day = now.withHour(3).withMinute(0).withSecond(0).withNano(0).plusDays(1);
+        // start the job at midnight in Pacific Time since that is the latest
+        // time zone in the server at the moment
+        final ZonedDateTime now = ZonedDateTime.now(ZoneId.of("America/Los_Angeles"));
+        final ZonedDateTime midnight = now.withHour(0).withMinute(0).withSecond(0).withNano(0).plusDays(1);
 
-        return Duration.between(now, three_am_next_day).toMillis();
+        return Duration.between(now, midnight).toMillis();
     }
 
     @Override
