@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class WordleMessage {
 
@@ -86,6 +87,10 @@ public class WordleMessage {
 
         WordleMessage message = new WordleMessage(wordleNumber, guessCount, hardMode, guesses);
         return Optional.of(message);
+    }
+
+    public String toGuessString() {
+        return this.guesses.stream().map(WordleGuess::toGuessString).collect(Collectors.joining("\n"));
     }
 
     public int getWordleNumber() {
