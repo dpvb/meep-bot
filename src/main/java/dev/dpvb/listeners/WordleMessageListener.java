@@ -22,7 +22,7 @@ public class WordleMessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         long channelId = event.getChannel().getIdLong();
-        if (channelId != Constants.BOT_TESTING_CHANNEL_ID) {
+        if (channelId != Constants.Wordle.CHANNEL_ID) {
             return;
         }
 
