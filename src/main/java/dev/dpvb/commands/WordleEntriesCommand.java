@@ -31,6 +31,10 @@ public class WordleEntriesCommand extends Command {
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+        if (!event.getName().equals(getName())) {
+            return;
+        }
+
         long wordleNumberLong = event.getOption("wordlenumber").getAsLong();
         boolean expanded = event.getOption("expanded").getAsBoolean();
 
