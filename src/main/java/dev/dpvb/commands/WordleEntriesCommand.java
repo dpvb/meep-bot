@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import org.jetbrains.annotations.NotNull;
 
 public class WordleEntriesCommand extends Command {
 
@@ -30,11 +31,7 @@ public class WordleEntriesCommand extends Command {
     }
 
     @Override
-    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        if (!event.getName().equals(getName())) {
-            return;
-        }
-
+    public void execute(@NotNull SlashCommandInteractionEvent event) {
         long wordleNumberLong = event.getOption("wordlenumber").getAsLong();
         boolean expanded = event.getOption("expanded").getAsBoolean();
 
