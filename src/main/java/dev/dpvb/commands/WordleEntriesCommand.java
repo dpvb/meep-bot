@@ -25,13 +25,13 @@ public class WordleEntriesCommand extends Command {
     @Override
     public SlashCommandData generateSlashCommand() {
         return Commands.slash(getName(), getDescription())
-                .addOption(OptionType.INTEGER, "wordleNumber", "The day number to get entries for", true)
+                .addOption(OptionType.INTEGER, "wordlenumber", "The day number to get entries for", true)
                 .addOption(OptionType.BOOLEAN, "expanded", "Show the guesses as well", false);
     }
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        long wordleNumberLong = event.getOption("wordleNumber").getAsLong();
+        long wordleNumberLong = event.getOption("wordlenumber").getAsLong();
         boolean expanded = event.getOption("expanded").getAsBoolean();
 
         int wordleNumber = (int) wordleNumberLong;

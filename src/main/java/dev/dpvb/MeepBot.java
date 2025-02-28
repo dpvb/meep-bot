@@ -65,6 +65,7 @@ public class MeepBot {
         commands.add(new HeyCommand());
         commands.add(new SuggestInsultCommand());
         commands.add(new InsultsCommand());
+        commands.add(new WordleEntriesCommand());
 
         // Register the slash commands with Discord
         jda.updateCommands()
