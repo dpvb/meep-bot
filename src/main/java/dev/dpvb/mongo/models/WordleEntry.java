@@ -42,11 +42,20 @@ public class WordleEntry {
     }
 
     public String asShortMessage(boolean withHeader) {
+        return this.asShortMessage(withHeader, "");
+    }
+
+    public String asShortMessage(boolean withHeader, String prefix) {
         String headerString = withHeader ? formatHeader() : "";
         String numberString = this.message.getGuessCount() < 0 ? "X" : Integer.toString(this.message.getGuessCount());
         String hardModeString = this.message.isHardMode() ? "*" : "";
 
-        return String.format("%s**%s** %s/X%s", headerString, this.getUsername(), numberString, hardModeString);
+        return String.format("%s%s**%s** %s/6%s",
+                headerString,
+                prefix,
+                this.getUsername(),
+                numberString,
+                hardModeString);
     }
 
     public String asLongMessage(boolean withHeader) {
@@ -54,12 +63,12 @@ public class WordleEntry {
         String numberString = this.message.getGuessCount() < 0 ? "X" : Integer.toString(this.message.getGuessCount());
         String hardModeString = this.message.isHardMode() ? "*" : "";
 
-        return String.format("%s**%s** %s/X%s%n%s",
+        return String.format("%s**%s** %s/6%s%n%s",
                 headerString,
-                this.getUsername(),
+                this.username,
                 numberString,
                 hardModeString,
-                this.getMessage().toGuessString());
+                this.message.toGuessString());
     }
 
     private String formatHeader() {
