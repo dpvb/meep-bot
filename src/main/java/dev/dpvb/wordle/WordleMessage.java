@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 public class WordleMessage {
 
+    public static final int LOSE_COUNT = -1;
     private static Pattern WORDLE_HEADER_PATTERN = Pattern.compile("Wordle ((\\d{1,3})(,\\d{3})*) (\\d|X)/6(\\*)?");
 
     private int wordleNumber;
@@ -53,9 +54,9 @@ public class WordleMessage {
         String guessCountStr = headerMatcher.group(4);
         // Regex is being matched in the header matcher above, so this has already been
         // validated. Thus, if it is not a number between 1-6 it must be X.
-        int guessCount = safeParseInt(guessCountStr).orElse(-1);
+        int guessCount = safeParseInt(guessCountStr).orElse(LOSE_COUNT);
 
-        if (!(guessCount == -1 || (1 <= guessCount && guessCount <= 6))) {
+        if (!(guessCount == LOSE_COUNT || (1 <= guessCount && guessCount <= 6))) {
             // invalid count
             return Optional.empty();
         }
@@ -63,13 +64,13 @@ public class WordleMessage {
         boolean hardMode = headerMatcher.group(5) != null;
 
         String[] guessStrs = pieces[1].split("\n");
-        if (guessCount == -1 && guessStrs.length > 6) {
+        if (guessCount == LOSE_COUNT && guessStrs.length > 6) {
             // If someone got scored X, and they wrote stuff after they pasted their score.
             String[] trimmed = new String[6];
             System.arraycopy(guessStrs, 0, trimmed, 0, 6);
             guessStrs = trimmed;
 
-        } else if (guessCount != -1 && guessStrs.length > guessCount) {
+        } else if (guessCount != LOSE_COUNT && guessStrs.length > guessCount) {
             // If someone got a score in range [1,6] and we need to trim the guesses down.
             String[] trimmed = new String[guessCount];
             System.arraycopy(guessStrs, 0, trimmed, 0, guessCount);
@@ -77,7 +78,7 @@ public class WordleMessage {
         }
 
         List<WordleGuess> guesses = readGuesses(guessStrs);
-        if (!((guessCount == -1 && guesses.size() == 6) || (guesses.size() == guessCount))) {
+        if (!((guessCount == LOSE_COUNT && guesses.size() == 6) || (guesses.size() == guessCount))) {
             return Optional.empty();
         }
 
@@ -87,6 +88,10 @@ public class WordleMessage {
 
         WordleMessage message = new WordleMessage(wordleNumber, guessCount, hardMode, guesses);
         return Optional.of(message);
+    }
+
+    public boolean didWin() {
+        return this.guessCount != LOSE_COUNT;
     }
 
     public String toGuessString() {

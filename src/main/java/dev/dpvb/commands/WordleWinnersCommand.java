@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class WordleEntriesCommand extends WordleCommand {
+public class WordleWinnersCommand extends WordleCommand {
 
-    public WordleEntriesCommand() {
-        super("wordle-entries", "Get the list of entries for the given Wordle Number");
+    public WordleWinnersCommand() {
+        super("world-winners", "Get the list of world winners for theh given Wordle Number");
     }
 
     @Override
@@ -35,15 +35,24 @@ public class WordleEntriesCommand extends WordleCommand {
             return;
         }
 
-        List<WordleEntry> wordleEntries = this.wes.getEntriesByWordleNumber(wordleNumber);
+        List<WordleEntry> wordleEntries = this.wes.getEntriesByWordleNumberOrderByGuessCount(wordleNumber);
+        if (wordleEntries.size() == 0 || !wordleEntries.get(0).getMessage().didWin()) {
+            event.reply("There are no winning entries for that day!").queue();
+            return;
+        }
+
+        int winnerScore = wordleEntries.get(0).getMessage().getGuessCount();
+        List<WordleEntry> winningEntries = wordleEntries.stream()
+                .takeWhile(e -> e.getMessage().getGuessCount() == winnerScore)
+                .toList();
 
         String connection = expanded ? "\n\n" : "\n";
         Function<WordleEntry, String> toMessage = expanded
                 ? entry -> entry.asLongMessage(false)
                 : entry -> entry.asShortMessage(false);
 
-        String body = wordleEntries.stream().map(toMessage).collect(Collectors.joining(connection));
-        String message = String.format("Wordle Entries for Wordle %,d%n%s", wordleNumber, body);
+        String body = winningEntries.stream().map(toMessage).collect(Collectors.joining(connection));
+        String message = String.format("Wordle Winners for Wordle %,d%n%s", wordleNumber, body);
         event.reply(message).queue();
     }
 
