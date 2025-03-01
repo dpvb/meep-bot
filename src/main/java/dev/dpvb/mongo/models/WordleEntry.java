@@ -41,4 +41,29 @@ public class WordleEntry {
         this.message = message;
     }
 
+    public String asShortMessage(boolean withHeader) {
+        String headerString = withHeader ? formatHeader() : "";
+        String numberString = this.message.getGuessCount() < 0 ? "X" : Integer.toString(this.message.getGuessCount());
+        String hardModeString = this.message.isHardMode() ? "*" : "";
+
+        return String.format("%s**%s** %s/X%s", headerString, this.getUsername(), numberString, hardModeString);
+    }
+
+    public String asLongMessage(boolean withHeader) {
+        String headerString = withHeader ? formatHeader() : "";
+        String numberString = this.message.getGuessCount() < 0 ? "X" : Integer.toString(this.message.getGuessCount());
+        String hardModeString = this.message.isHardMode() ? "*" : "";
+
+        return String.format("%s**%s** %s/X%s%n%s",
+                headerString,
+                this.getUsername(),
+                numberString,
+                hardModeString,
+                this.getMessage().toGuessString());
+    }
+
+    private String formatHeader() {
+        return String.format("Wordle %,d%n", this.getMessage().getWordleNumber());
+    }
+
 }

@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import org.jetbrains.annotations.NotNull;
 
 public class InsultsCommand extends Command {
 
@@ -23,13 +24,12 @@ public class InsultsCommand extends Command {
                 .setDefaultPermissions(DefaultMemberPermissions.DISABLED);
     }
 
-    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        if (event.getName().equals(getName())) {
-            // loop through approved messages and store them in a string
-            StringBuilder sb = new StringBuilder();
-            sb.append("# Approved Insults\n");
-            iss.getApprovedInsults().forEach(insult -> sb.append("- ").append(insult.getInsult()).append("\n"));
-            event.reply(sb.toString()).queue();
-        }
+    @Override
+    public void execute(@NotNull SlashCommandInteractionEvent event) {
+        // loop through approved messages and store them in a string
+        StringBuilder sb = new StringBuilder();
+        sb.append("# Approved Insults\n");
+        iss.getApprovedInsults().forEach(insult -> sb.append("- ").append(insult.getInsult()).append("\n"));
+        event.reply(sb.toString()).queue();
     }
 }

@@ -41,9 +41,9 @@ public class WordleWinnerJob extends Job {
             return;
         }
 
-        // Filter out -1 scores and sort the rest
+        // Filter out losses and sort the rest
         final List<WordleEntry> sortedScores = wordleEntries.stream()
-                .filter(entry -> entry.getMessage().getGuessCount() != -1)
+                .filter(entry -> entry.getMessage().didWin())
                 .sorted(Comparator.comparing(entry -> entry.getMessage().getGuessCount()))
                 .toList();
 

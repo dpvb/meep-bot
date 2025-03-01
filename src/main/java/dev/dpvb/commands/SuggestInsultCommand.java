@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.Date;
@@ -36,36 +37,35 @@ public class SuggestInsultCommand extends Command {
                 .addOption(OptionType.STRING, "insult", "The insult to suggest", true);
     }
 
-    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        if (event.getName().equals(getName())) {
-            final String insult = event.getOption("insult").getAsString();
-            event.reply("Suggestion sent!").queue();
+    @Override
+    public void execute(@NotNull SlashCommandInteractionEvent event) {
+        final String insult = event.getOption("insult").getAsString();
+        event.reply("Suggestion sent!").queue();
 
-            // Add the insult to the database.
-            final String username = event.getMember().getUser().getName();
-            final Date date = new Date();
-            final String approvalStatus = "pending";
-            final InsultSuggestion insultSuggestion = new InsultSuggestion(username, approvalStatus, insult, date);
-            String objectIdAsString = iss.addInsultSuggestion(insultSuggestion).asObjectId().getValue().toString();
+        // Add the insult to the database.
+        final String username = event.getMember().getUser().getName();
+        final Date date = new Date();
+        final String approvalStatus = "pending";
+        final InsultSuggestion insultSuggestion = new InsultSuggestion(username, approvalStatus, insult, date);
+        String objectIdAsString = iss.addInsultSuggestion(insultSuggestion).asObjectId().getValue().toString();
 
-            // Send the suggestion to the ingestion channel.
-            final TextChannel isiChannel = event.getJDA().getTextChannelById(INSULT_SUGGESTION_INGESTION_CHANNEL_ID);
-            if (isiChannel == null) {
-                System.err.println("Insult suggestion channel was not found...");
-                return;
-            }
-
-            EmbedBuilder eb = new EmbedBuilder();
-            eb.setTitle("Pending Mow", null);
-            eb.setColor(Color.yellow);
-            eb.setDescription("<@" + event.getMember().getId() + "> - " + insult);
-            eb.setImage(PENDING_IMAGE);
-            eb.setFooter(objectIdAsString, null);
-            MessageEmbed me = eb.build();
-            isiChannel.sendMessageEmbeds(me).addActionRow(
-                    Button.primary("approve", "Approve"),
-                    Button.danger("deny", "Deny")).queue();
+        // Send the suggestion to the ingestion channel.
+        final TextChannel isiChannel = event.getJDA().getTextChannelById(INSULT_SUGGESTION_INGESTION_CHANNEL_ID);
+        if (isiChannel == null) {
+            System.err.println("Insult suggestion channel was not found...");
+            return;
         }
+
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setTitle("Pending Mow", null);
+        eb.setColor(Color.yellow);
+        eb.setDescription("<@" + event.getMember().getId() + "> - " + insult);
+        eb.setImage(PENDING_IMAGE);
+        eb.setFooter(objectIdAsString, null);
+        MessageEmbed me = eb.build();
+        isiChannel.sendMessageEmbeds(me).addActionRow(
+                Button.primary("approve", "Approve"),
+                Button.danger("deny", "Deny")).queue();
     }
 
     @Override

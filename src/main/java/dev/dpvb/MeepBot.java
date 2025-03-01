@@ -65,6 +65,9 @@ public class MeepBot {
         commands.add(new HeyCommand());
         commands.add(new SuggestInsultCommand());
         commands.add(new InsultsCommand());
+        commands.add(new WordleEntriesCommand());
+        commands.add(new WordleStatsCommand());
+        commands.add(new WordleWinnersCommand());
 
         // Register the slash commands with Discord
         jda.updateCommands()
@@ -74,7 +77,7 @@ public class MeepBot {
                 .queue();
 
         // Register the event listeners
-        commands.forEach(command -> jda.addEventListener(command));
+        commands.forEach(jda::addEventListener);
         // Confirm all commands have been added.
         jda.retrieveCommands()
                 .complete()

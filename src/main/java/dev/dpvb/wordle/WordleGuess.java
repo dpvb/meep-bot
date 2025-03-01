@@ -8,7 +8,9 @@ import static dev.dpvb.util.Constants.LARGE_GREEN_SQUARE;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class WordleGuess {
 
@@ -46,6 +48,10 @@ public class WordleGuess {
             guess.setGuessChar(index, cellTypes.get(index));
         }
         return Optional.of(guess);
+    }
+
+    String toGuessString() {
+        return Stream.of(char0, char1, char2, char3, char4).map(CellType::toSquare).collect(Collectors.joining());
     }
 
     public CellType getChar0() {
@@ -111,6 +117,15 @@ public class WordleGuess {
                 default -> Optional.empty();
             };
             return type;
+        }
+
+        private String toSquare() {
+            int codePoint = switch (this) {
+                case INCORRECT -> LARGE_BLACK_SQUARE;
+                case MISPLACED -> LARGE_YELLOW_SQUARE;
+                case CORRECT -> LARGE_GREEN_SQUARE;
+            };
+            return Character.toString(codePoint);
         }
     }
 
