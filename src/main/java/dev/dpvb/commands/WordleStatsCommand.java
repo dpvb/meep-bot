@@ -4,6 +4,7 @@ import dev.dpvb.mongo.models.WordleEntry;
 import dev.dpvb.wordle.WordleMessage;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
@@ -27,10 +28,8 @@ public class WordleStatsCommand extends WordleCommand {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        User user = event.getOption("user").getAsUser();
-        if (user == null) {
-            user = event.getUser();
-        }
+        OptionMapping userOption = event.getOption("user");
+        User user = userOption != null ? userOption.getAsUser() : event.getUser();
 
         List<WordleEntry> userEntries = this.wes.getEntriesByDiscordID(user.getId());
         Map<Integer, List<WordleEntry>> grouped = userEntries.stream().collect(
