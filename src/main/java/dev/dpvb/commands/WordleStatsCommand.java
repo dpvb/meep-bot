@@ -47,7 +47,7 @@ public class WordleStatsCommand extends WordleCommand {
 
         int lossCount = grouped.getOrDefault(WordleMessage.LOSE_COUNT, Collections.emptyList()).size();
         String lossSuffix = lossCount != 1 ? "s" : "";
-        sb.append(String.format("- %,d game%s lost%n", lossCount, lossSuffix));
+        sb.append(String.format("- %,d game%s lost", lossCount, lossSuffix));
 
         event.reply(sb.toString()).queue();
     }
