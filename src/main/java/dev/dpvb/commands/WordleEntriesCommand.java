@@ -2,6 +2,7 @@ package dev.dpvb.commands;
 
 import dev.dpvb.mongo.models.WordleEntry;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
@@ -27,7 +28,12 @@ public class WordleEntriesCommand extends WordleCommand {
     @Override
     public void execute(@NotNull SlashCommandInteractionEvent event) {
         long wordleNumberLong = event.getOption("wordlenumber").getAsLong();
-        boolean expanded = event.getOption("expanded").getAsBoolean();
+
+        boolean expanded = false;
+        OptionMapping expandedOption = event.getOption("expanded");
+        if (expandedOption != null) {
+            expanded = expandedOption.getAsBoolean();
+        }
 
         int wordleNumber = (int) wordleNumberLong;
         if (wordleNumberLong != wordleNumber) {
@@ -40,7 +46,7 @@ public class WordleEntriesCommand extends WordleCommand {
         String connection = expanded ? "\n\n" : "\n";
         Function<WordleEntry, String> toMessage = expanded
                 ? entry -> entry.asLongMessage(false)
-                : entry -> entry.asShortMessage(false);
+                : entry -> entry.asShortMessage(false, "- ");
 
         String body = wordleEntries.stream().map(toMessage).collect(Collectors.joining(connection));
         String message = String.format("Wordle Entries for Wordle %,d%n%s", wordleNumber, body);

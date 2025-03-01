@@ -58,7 +58,7 @@ public class WordleGuess {
         return this.char0;
     }
 
-    public void getChar0(CellType char0) {
+    public void setChar0(CellType char0) {
         this.char0 = char0;
     }
 
@@ -66,7 +66,7 @@ public class WordleGuess {
         return this.char1;
     }
 
-    public void getChar1(CellType char1) {
+    public void setChar1(CellType char1) {
         this.char1 = char1;
     }
 
@@ -74,7 +74,7 @@ public class WordleGuess {
         return this.char2;
     }
 
-    public void getChar2(CellType char2) {
+    public void setChar2(CellType char2) {
         this.char2 = char2;
     }
 
@@ -82,7 +82,7 @@ public class WordleGuess {
         return this.char3;
     }
 
-    public void getChar3(CellType char3) {
+    public void setChar3(CellType char3) {
         this.char3 = char3;
     }
 
@@ -90,7 +90,7 @@ public class WordleGuess {
         return this.char4;
     }
 
-    public void getChar4(CellType char4) {
+    public void setChar4(CellType char4) {
         this.char4 = char4;
     }
 
