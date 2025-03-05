@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class WordleWinnersCommand extends WordleCommand {
 
     public WordleWinnersCommand() {
-        super("world-winners", "Get the list of world winners for theh given Wordle Number");
+        super("wordle-winners", "Get the list of world winners for theh given Wordle Number");
     }
 
     @Override
