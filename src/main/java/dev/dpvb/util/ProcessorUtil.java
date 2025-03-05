@@ -97,7 +97,13 @@ public class ProcessorUtil {
             System.exit(1);
         }
 
-        List<Message> wordleMessages = getAllMessagesFromChannels(List.of(wordleChannel));
+        TextChannel yapChannel = guild.getTextChannelById(Constants.YAP_CHANNEL_ID);
+        if (yapChannel == null) {
+            System.err.println("Couldn't find Yap text channel.");
+            System.exit(1);
+        }
+
+        List<Message> wordleMessages = getAllMessagesFromChannels(List.of(wordleChannel, yapChannel));
         for (Message wordleMessage : wordleMessages) {
             User author = wordleMessage.getAuthor();
             String content = wordleMessage.getContentRaw();
