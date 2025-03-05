@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class WordleWinnersCommand extends WordleCommand {
 
     public WordleWinnersCommand() {
-        super("world-winners", "Get the list of world winners for theh given Wordle Number");
+        super("wordle-winners", "Get the list of world winners for theh given Wordle Number");
     }
 
     @Override
@@ -42,7 +42,7 @@ public class WordleWinnersCommand extends WordleCommand {
         }
 
         List<WordleEntry> wordleEntries = this.wes.getEntriesByWordleNumberOrderByGuessCount(wordleNumber);
-        if (wordleEntries.size() == 0 || !wordleEntries.get(0).getMessage().didWin()) {
+        if (wordleEntries.isEmpty() || !wordleEntries.get(0).getMessage().didWin()) {
             event.reply("There are no winning entries for that day!").queue();
             return;
         }

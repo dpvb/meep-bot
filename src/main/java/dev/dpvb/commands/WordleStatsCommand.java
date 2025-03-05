@@ -36,12 +36,13 @@ public class WordleStatsCommand extends WordleCommand {
                 Collectors.groupingBy(e -> e.getMessage().getGuessCount()));
 
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%s has the following Wordle record:%n%n", user.getEffectiveName()));
+        sb.append(String.format("%s has the following Wordle record:%n", user.getEffectiveName()));
         for (int i = 1; i <= 6; ++i) {
             int count = grouped.getOrDefault(i, Collections.emptyList()).size();
-            String suffix = count != 1 ? "s" : "";
+            String countSuffix = count != 1 ? "s" : "";
+            String guessSuffix = i != 1 ? "es" : "";
 
-            sb.append(String.format("- %,d game%s won in %d guesses%n", count, suffix, i));
+            sb.append(String.format("- %,d game%s won in %d guess%s%n", count, countSuffix, i, guessSuffix));
         }
 
         int lossCount = grouped.getOrDefault(WordleMessage.LOSE_COUNT, Collections.emptyList()).size();
