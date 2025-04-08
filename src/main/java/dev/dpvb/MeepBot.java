@@ -69,6 +69,7 @@ public class MeepBot {
         commands.add(new WordleStatsCommand());
         commands.add(new WordleWinnersCommand());
         commands.add(new GoatCommand());
+        commands.add(new BanJoshCommand());
 
         // Register the slash commands with Discord
         jda.updateCommands()
