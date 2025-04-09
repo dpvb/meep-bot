@@ -15,6 +15,7 @@ public class JobManager {
 
     private JobManager(JDA jda) {
         jobs.add(new WordleWinnerJob(jda));
+        jobs.add(new JoshNicknameJob(jda));
         scheduleJobs();
     }
 

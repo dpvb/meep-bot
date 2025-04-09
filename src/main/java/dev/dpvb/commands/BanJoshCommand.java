@@ -1,5 +1,6 @@
 package dev.dpvb.commands;
 
+import dev.dpvb.util.Constants;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.unions.DefaultGuildChannelUnion;
@@ -9,8 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.TimeUnit;
 
 public class BanJoshCommand extends Command {
-
-    private static final long JOSH_DISCORD_ID = 221748640236961792L;
 
     public BanJoshCommand() {
         super("ban-josh", "ban josh for being a rat");
@@ -23,7 +22,7 @@ public class BanJoshCommand extends Command {
             return;
         }
 
-        final Member joshMember = guild.getMemberById(JOSH_DISCORD_ID);
+        final Member joshMember = guild.getMemberById(Constants.JOSH_ID);
         if (joshMember == null) {
             return;
         }
