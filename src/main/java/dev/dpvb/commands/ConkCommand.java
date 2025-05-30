@@ -8,6 +8,6 @@ public class ConkCommand extends Command {
     public ConkCommand() { super("conk", "That's Conk Creet Baybee"); }
 
     @Override
-    public void execute(@NotNull SlashCommandInteractionEvent event) { event.reply("https://imgur.com/a/bOH5iaI").queue(); }
+    public void execute(@NotNull SlashCommandInteractionEvent event) { event.reply("https://imgur.com/DGtnZBe").queue(); }
 
 }
