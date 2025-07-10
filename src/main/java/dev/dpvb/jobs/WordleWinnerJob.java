@@ -11,6 +11,7 @@ import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,8 +36,17 @@ public class WordleWinnerJob extends Job {
         final int wordleNumber = (int) ChronoUnit.DAYS.between(Constants.Wordle.INITIAL_DATE, yesterday);
 
         final List<WordleEntry> wordleEntries = wes.getEntriesByWordleNumber(wordleNumber);
+        final Optional<Integer> lastWordleEntryNumber = wes.getMostRecentWordleEntryNumber();
 
         if (wordleEntries.isEmpty()) {
+            if (lastWordleEntryNumber.isPresent()) {
+                int lastEntry = lastWordleEntryNumber.get();
+                if (wordleNumber - lastEntry > 7) {
+                    // a week has passed without entries, don't send a message
+                    return;
+                }
+            }
+
             wordleChannel.sendMessage("No one submitted anything for the Wordle today :C").queue();
             return;
         }
