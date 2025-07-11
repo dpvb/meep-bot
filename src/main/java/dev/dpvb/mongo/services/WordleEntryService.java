@@ -9,6 +9,7 @@ import org.bson.conversions.Bson;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 import static com.mongodb.client.model.Filters.and;
@@ -60,6 +61,12 @@ public class WordleEntryService extends MongoService<WordleEntry> {
     public List<WordleEntry> getEntriesByDiscordID(String discordID) {
         Bson filter = eq("discordID", discordID);
         return collection.find(filter).into(new ArrayList<>());
+    }
+
+    public Optional<Integer> getMostRecentWordleEntryNumber() {
+        ArrayList<WordleEntry> entries = collection.find().into(new ArrayList<>());
+        return entries.stream().map(entry -> entry.getMessage().getWordleNumber())
+                .max(Comparator.comparing(Function.identity()));
     }
 
 }
