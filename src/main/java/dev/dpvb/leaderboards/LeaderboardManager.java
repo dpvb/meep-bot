@@ -33,6 +33,7 @@ public class LeaderboardManager {
         leaderboards.add(new BuhLeaderboard());
         leaderboards.add(new MowLeaderboard());
         leaderboards.add(new HumpDayLeaderboard());
+        leaderboards.add(new JoshJoinCountLeaderboard(jda));
 
         final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         executor.scheduleWithFixedDelay(
