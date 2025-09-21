@@ -32,7 +32,7 @@ public class JoshJoinCountLeaderboard extends Leaderboard {
         List<Message> messages = history.retrievePast(100).complete();
         while (!messages.isEmpty()) {
             long batchCount = messages.stream()
-                    // TODO: parameterize this. what if he changes his username?
+                    // TODO: parameterize this. what if the welcome message changes?
                     .filter(message -> message.getContentRaw().equals("Welcome this new rat: D_Diamonds"))
                     .count();
 
