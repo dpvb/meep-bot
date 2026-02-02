@@ -12,12 +12,8 @@ public class JoshNicknameJob extends Job {
     private final JDA jda;
     private final List<String> NICKNAMES = List.of(
             "rat man",
-            "h_horny",
-            "i cant code to save my life",
-            "getting fired from c1",
-            "not graduating",
-            "squimp's worst enemy",
-            "send me feet pics"
+            "pluh",
+            "brownie enjoyer"
     );
 
     public JoshNicknameJob(JDA jda) {
