@@ -39,6 +39,6 @@ public class InsultListener extends ListenerAdapter {
 
     private boolean isValidInsultChannel(long channelId) {
         // Temporary, boring implementation
-        return channelId == YIP_YAP_CHANNEL_ID;
+        return channelId != YIP_YAP_CHANNEL_ID;
     }
 }
