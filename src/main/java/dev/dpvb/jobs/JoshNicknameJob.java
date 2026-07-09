@@ -17,6 +17,7 @@ public class JoshNicknameJob extends Job {
     );
 
     public JoshNicknameJob(JDA jda) {
+        super(true);
         this.jda = jda;
     }
 

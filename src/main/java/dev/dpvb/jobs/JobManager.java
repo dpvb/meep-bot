@@ -30,7 +30,13 @@ public class JobManager {
         jobs.forEach(job -> {
             long initialDelay = job.getInitialDelay();
             long delay = job.getDelay();
-            exec.scheduleWithFixedDelay(job, initialDelay, delay, TimeUnit.MILLISECONDS);
+            // start every hour, not an hour after the job has completed
+            exec.scheduleAtFixedRate(job, initialDelay, delay, TimeUnit.MILLISECONDS);
+
+            if (job.runAtInitialization) {
+                Thread jobThread = new Thread(job);
+                jobThread.start();
+            }
         });
     }
 
